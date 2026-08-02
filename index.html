@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Corporate Doctor — Non-Clinical Careers for Healthcare Graduates</title>
+<meta name="description" content="Non-clinical vacancies and career guidance for every healthcare graduate — MBBS, AYUSH, Dentistry, Pharmacy, Nursing, Physiotherapy, Biotechnology and Life Sciences.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+  :root{
+    --ink:#1B2733;
+    --navy:#0056D2;
+    --navy-light:#00419E;
+    --dark:#081B33;
+    --sky:#D9ECFF;
+    --sky-deep:#0056D2;
+    --coral:#FF6B4A;
+    --coral-deep:#E14A2E;
+    --paper:#FFFFFF;
+    --paper-dim:#F3F8FF;
+    --ink-soft:#5A6B7B;
+    --border:#E3E9F2;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;font-family:'Inter',sans-serif;color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased;}
+  h1,h2,h3,.serif{font-family:'Fraunces',serif;font-weight:500;line-height:1.08;margin:0;color:var(--ink);}
+  a{color:inherit;text-decoration:none;}
+  img{max-width:100%;display:block;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;}
+  :focus-visible{outline:3px solid var(--sky-deep);outline-offset:2px;}
+
+  header.site{position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;max-width:1180px;margin:0 auto;gap:16px;}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.02rem;letter-spacing:-0.01em;flex:none;}
+  .brand span.sub{display:block;font-family:'Inter';font-weight:500;font-size:0.6rem;letter-spacing:0.13em;text-transform:uppercase;color:var(--ink-soft);margin-top:1px;}
+  nav.links{display:flex;gap:22px;align-items:center;overflow-x:auto;}
+  nav.links a{font-size:0.86rem;font-weight:600;color:var(--ink-soft);white-space:nowrap;}
+  nav.links a:hover{color:var(--navy);}
+  .login-btn{background:var(--navy);color:#fff;padding:10px 20px;border-radius:100px;font-weight:700;font-size:0.85rem;white-space:nowrap;transition:.15s ease;}
+  .login-btn:hover{background:var(--navy-light);}
+  .user-chip{display:flex;align-items:center;gap:8px;font-size:0.82rem;font-weight:600;color:var(--navy);white-space:nowrap;}
+  .user-chip button{color:var(--ink-soft);font-weight:600;font-size:0.78rem;text-decoration:underline;}
+
+  .hero{position:relative;overflow:hidden;padding:60px 0 48px;}
+  .hero::before{content:'';position:absolute;top:-120px;right:-160px;width:520px;height:520px;background:radial-gradient(circle,var(--sky) 0%,rgba(217,236,255,0) 68%);z-index:0;}
+  .hero-inner{position:relative;z-index:1;max-width:760px;}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:0.72rem;font-weight:700;letter-spacing:0.06em;color:var(--navy-light);background:var(--sky);padding:8px 16px;border-radius:100px;margin-bottom:20px;line-height:1.4;max-width:100%;}
+  .hero h1{font-size:2.7rem;letter-spacing:-0.015em;max-width:14ch;}
+  .hero h1 em{font-style:italic;color:var(--coral-deep);}
+  .hero p.lead{margin-top:18px;font-size:1.08rem;color:var(--ink-soft);max-width:54ch;line-height:1.55;}
+  .hero-actions{display:flex;gap:14px;margin-top:28px;flex-wrap:wrap;}
+  .btn-primary{background:var(--navy);color:#fff;padding:14px 26px;border-radius:100px;font-weight:700;font-size:0.94rem;transition:.15s ease;display:inline-block;}
+  .btn-primary:hover{background:var(--navy-light);transform:translateY(-1px);}
+  .btn-secondary{background:transparent;color:var(--ink);padding:14px 24px;border-radius:100px;font-weight:700;font-size:0.94rem;border:1.5px solid var(--border);transition:.15s ease;display:inline-block;}
+  .btn-secondary:hover{border-color:var(--navy);}
+
+  .feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  .feature-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:24px;display:flex;flex-direction:column;gap:8px;transition:.18s ease;position:relative;}
+  .feature-card:hover{border-color:var(--sky-deep);box-shadow:0 14px 30px -18px rgba(0,86,210,0.3);transform:translateY(-2px);}
+  .feature-card .emoji{font-size:1.7rem;}
+  .feature-card h3{font-size:1.08rem;font-weight:600;}
+  .feature-card p{font-size:0.86rem;color:var(--ink-soft);line-height:1.45;margin:0;}
+  .feature-card .goto{font-size:0.8rem;font-weight:700;color:var(--navy);margin-top:auto;padding-top:6px;}
+  .soon-badge{position:absolute;top:16px;right:16px;font-size:0.62rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;background:var(--paper-dim);color:var(--ink-soft);padding:4px 9px;border-radius:100px;}
+
+  .section{padding:60px 0;}
+  .section-head{margin-bottom:28px;}
+  .section-head h2{font-size:1.9rem;letter-spacing:-0.01em;}
+  .section-head p{color:var(--ink-soft);margin-top:8px;max-width:58ch;}
+  .section-tag{font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--coral-deep);margin-bottom:8px;display:block;}
+
+  .cat-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;}
+  .cat-tab{background:var(--paper-dim);border:1px solid var(--border);border-radius:100px;padding:9px 16px;font-size:0.82rem;font-weight:600;color:var(--ink-soft);transition:.15s ease;}
+  .cat-tab.active,.cat-tab:hover{background:var(--navy);color:#fff;border-color:var(--navy);}
+
+  .job-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+  .job-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:22px;display:flex;flex-direction:column;gap:10px;transition:.18s ease;}
+  .job-card:hover{border-color:var(--sky-deep);box-shadow:0 12px 28px -18px rgba(0,86,210,0.28);transform:translateY(-2px);}
+  .job-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;}
+  .job-title{font-family:'Fraunces';font-weight:600;font-size:1.1rem;letter-spacing:-0.01em;}
+  .job-tag{font-size:0.66rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--navy-light);background:var(--sky);padding:4px 10px;border-radius:100px;white-space:nowrap;flex:none;}
+  .job-meta{display:flex;gap:14px;flex-wrap:wrap;font-size:0.85rem;color:var(--ink-soft);}
+  .job-desc{font-size:0.88rem;color:var(--ink-soft);line-height:1.5;}
+  .job-foot{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:8px;}
+  .job-date{font-size:0.76rem;color:#9AA7B2;}
+  .view-btn{background:var(--navy);color:#fff;padding:9px 18px;border-radius:100px;font-weight:700;font-size:0.8rem;transition:.15s ease;}
+  .view-btn:hover{background:var(--coral);}
+  .empty-state,.load-state{grid-column:1/-1;text-align:center;padding:50px 20px;color:var(--ink-soft);background:#fff;border:1px dashed var(--border);border-radius:var(--radius);}
+  .empty-state b{display:block;color:var(--ink);font-family:'Fraunces';font-size:1.15rem;margin-bottom:6px;}
+
+  .course-card{grid-column:1/-1;background:linear-gradient(135deg,var(--dark) 0%,var(--navy-light) 100%);border-radius:var(--radius);padding:24px 26px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;}
+  .course-card .tag{font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#9ADBF5;}
+  .course-card h4{color:#fff;font-family:'Fraunces';font-weight:600;font-size:1.15rem;margin-top:4px;}
+  .course-card p{color:#B9C7D4;font-size:0.86rem;margin-top:4px;max-width:46ch;}
+  .course-card a{background:var(--coral);color:#fff;padding:11px 22px;border-radius:100px;font-weight:700;font-size:0.86rem;white-space:nowrap;transition:.15s ease;}
+  .course-card a:hover{background:#fff;color:var(--dark);}
+
+  .locked-wrap{position:relative;margin-top:8px;}
+  .locked-preview{filter:blur(6px);opacity:.6;pointer-events:none;user-select:none;}
+  .unlock-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:20px;}
+  .unlock-overlay b{font-family:'Fraunces';font-size:1.3rem;}
+  .unlock-overlay p{color:var(--ink-soft);font-size:0.9rem;max-width:34ch;}
+  .more-btn-wrap{text-align:center;margin-top:28px;}
+
+  footer{background:var(--dark);color:#B9C7D4;padding:52px 0 26px;margin-top:20px;}
+  .footer-grid{display:grid;grid-template-columns:1.4fr repeat(2,1fr);gap:32px;}
+  .footer-brand{display:flex;align-items:center;gap:10px;color:#fff;font-weight:700;font-size:1.02rem;margin-bottom:12px;}
+  .footer-grid p{font-size:0.86rem;line-height:1.6;max-width:38ch;}
+  .footer-grid h5{color:#fff;font-size:0.78rem;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px;}
+  .footer-grid ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px;}
+  .footer-grid a{font-size:0.86rem;}
+  .footer-grid a:hover{color:#fff;}
+  .degree-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;}
+  .degree-tags span{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);color:#D6E3EE;font-size:0.72rem;padding:4px 10px;border-radius:100px;}
+  .footer-bottom{max-width:1180px;margin:36px auto 0;padding:20px 24px 0;border-top:1px solid rgba(255,255,255,0.12);display:flex;justify-content:space-between;font-size:0.76rem;color:#7E92A3;flex-wrap:wrap;gap:10px;}
+
+  .modal-overlay{position:fixed;inset:0;background:rgba(8,27,51,0.55);display:none;align-items:center;justify-content:center;z-index:200;padding:20px;}
+  .modal-overlay.open{display:flex;}
+  .modal-box{background:#fff;border-radius:20px;padding:32px;max-width:400px;width:100%;position:relative;box-shadow:0 30px 60px -20px rgba(8,27,51,0.4);}
+  .modal-close{position:absolute;top:16px;right:16px;background:var(--paper-dim);border-radius:100px;width:30px;height:30px;font-size:1rem;color:var(--ink-soft);}
+  .modal-box h4{font-family:'Fraunces';font-size:1.3rem;margin-bottom:6px;}
+  .modal-box p.modal-sub{color:var(--ink-soft);font-size:0.86rem;margin:0 0 20px;line-height:1.5;}
+  .modal-box label{font-size:0.78rem;font-weight:700;color:var(--ink-soft);display:block;margin-bottom:5px;}
+  .modal-box input{width:100%;border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-family:inherit;font-size:0.94rem;margin-bottom:14px;background:var(--paper-dim);}
+  .modal-box input:focus{outline:none;border-color:var(--sky-deep);background:#fff;}
+  .modal-submit{width:100%;background:var(--navy);color:#fff;padding:13px;border-radius:10px;font-weight:700;font-size:0.94rem;transition:.15s ease;}
+  .modal-submit:hover{background:var(--navy-light);}
+  .modal-note{font-size:0.78rem;color:var(--ink-soft);margin-top:12px;text-align:center;}
+  .modal-error{color:var(--coral-deep);font-size:0.82rem;margin:-6px 0 12px;display:none;}
+  .modal-error.show{display:block;}
+
+  @media (max-width:860px){
+    nav.links{display:none;}
+    .hero h1{font-size:2.1rem;}
+    .feature-grid{grid-template-columns:1fr 1fr;}
+    .job-grid{grid-template-columns:1fr;}
+    .footer-grid{grid-template-columns:1fr;}
+  }
+  @media (max-width:520px){ .feature-grid{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="nav-inner">
+    <a class="brand" href="#top">
+      <svg width="32" height="32" viewBox="0 0 34 34" fill="none">
+        <circle cx="17" cy="17" r="17" fill="#D9ECFF"/>
+        <path d="M10 9v7.2a4.8 4.8 0 0 0 9.6 0V9" stroke="#0056D2" stroke-width="1.8" stroke-linecap="round"/>
+        <circle cx="24.5" cy="9" r="2" fill="#0056D2"/>
+        <path d="M14.8 21.5 18 25l7-8" stroke="#FF6B4A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>corporate doctor<span class="sub">non-clinical careers</span></span>
+    </a>
+    <nav class="links">
+      <a href="#find-jobs">Find Jobs</a>
+      <a href="#" class="ext-link" data-dest="paths">Career Paths</a>
+      <a href="#" class="ext-link" data-dest="skills">Learn Skills</a>
+      <a href="#" class="ext-link" data-dest="mentor">Mentor</a>
+      <a href="#" class="ext-link" data-dest="resume">Resume</a>
+    </nav>
+    <div id="authArea"><button class="login-btn" id="navLoginBtn">Login</button></div>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <span class="eyebrow">For MBBS &amp; AYUSH doctors, dentists, pharmacists, nurses, physiotherapists, biotech &amp; life science graduates</span>
+      <h1>Your healthcare degree opens more doors than <em>the clinic</em>.</h1>
+      <p class="lead">Non-clinical vacancies and honest career guidance for every healthcare graduate — pharmacovigilance, clinical research, medical writing, medical affairs and more.</p>
+      <div class="hero-actions">
+        <a href="#find-jobs" class="btn-primary">🔍 Find Jobs</a>
+        <a href="#" class="btn-secondary ext-link" data-dest="paths">🧭 Explore Career Paths</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap" style="padding-bottom:56px;">
+    <div class="feature-grid">
+      <a class="feature-card" href="#find-jobs">
+        <span class="emoji">🔍</span>
+        <h3>Find Jobs</h3>
+        <p>Browse live non-clinical vacancies across pharmacovigilance, clinical research, medical writing and more.</p>
+        <span class="goto">Browse below ↓</span>
+      </a>
+      <a class="feature-card ext-link" href="#" data-dest="paths">
+        <span class="emoji">🧭</span>
+        <h3>Explore Career Paths</h3>
+        <p>See where your degree can take you outside clinical practice, mapped out step by step.</p>
+        <span class="goto">Explore on Graphy →</span>
+      </a>
+      <a class="feature-card ext-link" href="#" data-dest="skills">
+        <span class="emoji">📚</span>
+        <h3>Learn New Skills</h3>
+        <p>Structured courses built for healthcare graduates entering non-clinical roles.</p>
+        <span class="goto">Browse courses →</span>
+      </a>
+      <a class="feature-card ext-link" href="#" data-dest="mentor">
+        <span class="emoji">👨‍🏫</span>
+        <h3>Talk to a Mentor</h3>
+        <p>Book a 1:1 call with someone who's already made the switch you're considering.</p>
+        <span class="goto">Book a call →</span>
+      </a>
+      <a class="feature-card ext-link" href="#" data-dest="resume">
+        <span class="emoji">📄</span>
+        <h3>Improve My Resume</h3>
+        <p>Get your clinical experience translated into a resume corporate recruiters understand.</p>
+        <span class="goto">Get started →</span>
+      </a>
+      <a class="feature-card ext-link" href="#" data-dest="ai">
+        <span class="emoji">🤖</span>
+        <h3>AI Career Advisor</h3>
+        <p>Personalised guidance on your best-fit non-clinical path, powered by AI.</p>
+        <span class="goto">Join waitlist →</span>
+        <span class="soon-badge">Coming Soon</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="section" id="find-jobs">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-tag">Current openings</span>
+        <h2>Non-clinical vacancies</h2>
+        <p>Every listing links straight to the employer's application page. Open to MBBS, AYUSH, BDS, Pharmacy, Nursing, Physiotherapy, Biotechnology and Life Science graduates.</p>
+      </div>
+      <div class="cat-tabs" id="catTabs">
+        <button class="cat-tab active" data-cat="all">All</button>
+      </div>
+      <div class="job-grid" id="jobGrid">
+        <div class="load-state">Loading vacancies…</div>
+      </div>
+
+      <div class="locked-wrap" id="lockedWrap" style="display:none;">
+        <div class="job-grid locked-preview" id="lockedPreviewGrid"></div>
+        <div class="unlock-overlay">
+          <b>🔒 More vacancies waiting</b>
+          <p>Log in with your email to unlock the full list — free, takes 30 seconds.</p>
+          <button class="btn-primary" id="unlockBtn">Login to See More</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap footer-grid">
+    <div>
+      <div class="footer-brand">
+        <svg width="26" height="26" viewBox="0 0 34 34" fill="none">
+          <circle cx="17" cy="17" r="17" fill="#D9ECFF"/>
+          <path d="M10 9v7.2a4.8 4.8 0 0 0 9.6 0V9" stroke="#0056D2" stroke-width="1.8" stroke-linecap="round"/>
+          <circle cx="24.5" cy="9" r="2" fill="#0056D2"/>
+          <path d="M14.8 21.5 18 25l7-8" stroke="#FF6B4A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        corporate doctor
+      </div>
+      <p>Non-clinical career vacancies and guidance for every healthcare graduate ready to build a career beyond the clinic.</p>
+      <div class="degree-tags">
+        <span>Doctors (MBBS, AYUSH)</span><span>Dentists</span><span>Pharmacy</span>
+        <span>Nursing</span><span>Physiotherapy</span><span>Biotechnology</span><span>Life Sciences</span>
+      </div>
+    </div>
+    <div>
+      <h5>Explore</h5>
+      <ul>
+        <li><a href="#find-jobs">Find Jobs</a></li>
+        <li><a href="#" class="ext-link" data-dest="paths">Career Paths</a></li>
+        <li><a href="#" class="ext-link" data-dest="skills">Learn Skills</a></li>
+        <li><a href="#" class="ext-link" data-dest="mentor">Talk to a Mentor</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Account</h5>
+      <ul>
+        <li><a href="#" id="footerLoginLink">Login</a></li>
+        <li><a href="mailto:hello@corporatedoctor.in">Post a Vacancy</a></li>
+        <li><a href="mailto:hello@corporatedoctor.in">Contact Us</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© <span id="year"></span> Corporate Doctor · corporatedoctor.in</span>
+    <span>Built for every healthcare graduate, not just doctors.</span>
+  </div>
+</footer>
+
+<div class="modal-overlay" id="authOverlay">
+  <div class="modal-box">
+    <button class="modal-close" id="authClose">✕</button>
+
+    <div id="stepDetails">
+      <h4>Log in to continue</h4>
+      <p class="modal-sub">We'll email you a 6-digit code. Quick, free, no password to remember.</p>
+      <div class="modal-error" id="detailsError">Please fill in all fields correctly.</div>
+      <label>Full name</label>
+      <input type="text" id="nameInput" placeholder="Dr. Jane Doe">
+      <label>Phone number</label>
+      <input type="tel" id="phoneInput" placeholder="+91 98765 43210">
+      <label>Email</label>
+      <input type="email" id="emailInput" placeholder="you@email.com">
+      <button class="modal-submit" id="sendOtpBtn">Send OTP to Email</button>
+    </div>
+
+    <div id="stepCode" style="display:none;">
+      <h4>Enter the code</h4>
+      <p class="modal-sub" id="otpSentTo">We emailed you a 6-digit code.</p>
+      <div class="modal-error" id="codeError">Incorrect or expired code. Try again.</div>
+      <input type="text" id="codeInput" placeholder="Enter the code from your email" maxlength="8" inputmode="numeric">
+      <button class="modal-submit" id="verifyOtpBtn">Verify &amp; Continue</button>
+      <p class="modal-note"><a href="#" id="resendOtp" style="font-weight:700;color:var(--navy);">Resend code</a></p>
+    </div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = "https://miyxnskyxsvtlbvxhfsl.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1peXhuc2t5eHN2dGxidnhoZnNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU2MDQ3MTcsImV4cCI6MjEwMTE4MDcxN30.gUGnX_PnjtNnDVyNOyIniKHHUPn46bEpldTMclo2J8Q";
+
+const GRAPHY_LINKS = {
+  paths:  "https://raghavhugar.graphy.com/",
+  skills: "https://raghavhugar.graphy.com/courses",
+  mentor: "https://raghavhugar.graphy.com/",
+  resume: "https://raghavhugar.graphy.com/",
+  ai:     "https://raghavhugar.graphy.com/",
+};
+
+const INITIAL_JOB_LIMIT = 6;
+const JOBS_PER_COURSE_BREAK = 2;
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+document.getElementById('year').textContent = new Date().getFullYear();
+document.querySelectorAll('.ext-link').forEach(el => {
+  el.addEventListener('click', (e) => {
+    e.preventDefault();
+    const dest = el.dataset.dest;
+    window.open(GRAPHY_LINKS[dest] || "https://raghavhugar.graphy.com/", '_blank', 'noopener');
+  });
+});
+
+let categories = [];
+let courses = [];
+let allJobs = [];
+let activeCategory = 'all';
+let currentUser = null;
+let pendingAction = null;
+
+function escapeHtml(str){
+  return String(str ?? '').replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+}
+function timeAgo(dateStr){
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  if (isNaN(d)) return dateStr;
+  const days = Math.floor((Date.now() - d.getTime()) / 86400000);
+  if (days <= 0) return 'Today';
+  if (days === 1) return '1 day ago';
+  if (days < 30) return days + ' days ago';
+  return d.toLocaleDateString('en-IN', {month:'short', day:'numeric', year:'numeric'});
+}
+
+async function loadData(){
+  const [{ data: catData }, { data: courseData }, { data: jobData }] = await Promise.all([
+    sb.from('categories').select('*').order('sort_order'),
+    sb.from('courses').select('*'),
+    sb.from('vacancies').select('*, categories(name)').eq('is_active', true).order('posted_date', {ascending:false})
+  ]);
+  categories = catData || [];
+  courses = courseData || [];
+  allJobs = (jobData || []).map(j => ({
+    id: j.id, title: j.title, company: j.company, location: j.location,
+    category_id: j.category_id, category: j.categories ? j.categories.name : 'General',
+    type: j.employment_type, link: j.application_link, posted: j.posted_date, desc: j.description
+  }));
+  renderCatTabs();
+  renderJobs();
+}
+
+function renderCatTabs(){
+  const el = document.getElementById('catTabs');
+  const names = ['all', ...new Set(allJobs.map(j => j.category).filter(Boolean))];
+  el.innerHTML = names.map(n =>
+    `<button class="cat-tab${n===activeCategory?' active':''}" data-cat="${escapeHtml(n)}">${n==='all'?'All':escapeHtml(n)}</button>`
+  ).join('');
+  el.querySelectorAll('.cat-tab').forEach(btn => {
+    btn.addEventListener('click', () => { activeCategory = btn.dataset.cat; renderCatTabs(); renderJobs(); });
+  });
+}
+
+function courseFor(categoryId){
+  return courses.find(c => c.category_id === categoryId);
+}
+
+function jobCardHtml(j){
+  return `
+    <article class="job-card">
+      <div class="job-top">
+        <h3 class="job-title">${escapeHtml(j.title)}</h3>
+        <span class="job-tag">${escapeHtml(j.category)}</span>
+      </div>
+      <div class="job-meta">
+        <span>🏢 ${escapeHtml(j.company)}</span>
+        <span>📍 ${escapeHtml(j.location)}</span>
+        <span>🕒 ${escapeHtml(j.type || 'Full-time')}</span>
+      </div>
+      ${j.desc ? `<p class="job-desc">${escapeHtml(j.desc)}</p>` : ''}
+      <div class="job-foot">
+        <span class="job-date">${escapeHtml(timeAgo(j.posted))}</span>
+        <button class="view-btn apply-btn" data-link="${escapeHtml(j.link)}">View Vacancy →</button>
+      </div>
+    </article>`;
+}
+
+function courseCardHtml(course){
+  return `
+    <div class="course-card">
+      <div>
+        <span class="tag">Related course</span>
+        <h4>${escapeHtml(course.title)}</h4>
+        <p>Want to actually break into this field? This course walks you through it step by step.</p>
+      </div>
+      <a href="${escapeHtml(course.graphy_url)}" target="_blank" rel="noopener">Explore Course →</a>
+    </div>`;
+}
+
+function buildCardSequence(jobs){
+  const out = [];
+  let count = 0;
+  for (const j of jobs){
+    out.push({type:'job', data:j});
+    count++;
+    if (count % JOBS_PER_COURSE_BREAK === 0){
+      const course = courseFor(j.category_id);
+      if (course) out.push({type:'course', data:course});
+    }
+  }
+  return out;
+}
+
+function renderJobs(){
+  const grid = document.getElementById('jobGrid');
+  const lockedWrap = document.getElementById('lockedWrap');
+  const lockedGrid = document.getElementById('lockedPreviewGrid');
+
+  let list = allJobs.filter(j => activeCategory === 'all' || j.category === activeCategory);
+
+  if (!list.length){
+    grid.innerHTML = `<div class="empty-state"><b>No vacancies here yet</b>Try a different category, or check back soon.</div>`;
+    lockedWrap.style.display = 'none';
+    return;
+  }
+
+  const visibleJobs = currentUser ? list : list.slice(0, INITIAL_JOB_LIMIT);
+  const hiddenJobs = currentUser ? [] : list.slice(INITIAL_JOB_LIMIT);
+
+  grid.innerHTML = buildCardSequence(visibleJobs).map(c => c.type === 'job' ? jobCardHtml(c.data) : courseCardHtml(c.data)).join('');
+  bindApplyButtons(grid);
+
+  if (hiddenJobs.length){
+    lockedWrap.style.display = '';
+    lockedGrid.innerHTML = buildCardSequence(hiddenJobs).map(c => c.type === 'job' ? jobCardHtml(c.data) : courseCardHtml(c.data)).join('');
+  } else {
+    lockedWrap.style.display = 'none';
+  }
+}
+
+function bindApplyButtons(scope){
+  scope.querySelectorAll('.apply-btn').forEach(btn => {
+    btn.addEventListener('click', () => requestApply(btn.dataset.link));
+  });
+}
+
+document.getElementById('unlockBtn').addEventListener('click', () => openAuthModal({type:'unlock'}));
+
+const authOverlay = document.getElementById('authOverlay');
+const stepDetails = document.getElementById('stepDetails');
+const stepCode = document.getElementById('stepCode');
+const nameInput = document.getElementById('nameInput');
+const phoneInput = document.getElementById('phoneInput');
+const emailInput = document.getElementById('emailInput');
+const codeInput = document.getElementById('codeInput');
+const detailsError = document.getElementById('detailsError');
+const codeError = document.getElementById('codeError');
+
+function openAuthModal(action){
+  pendingAction = action;
+  stepDetails.style.display = '';
+  stepCode.style.display = 'none';
+  detailsError.classList.remove('show');
+  codeError.classList.remove('show');
+  authOverlay.classList.add('open');
+  nameInput.focus();
+}
+function closeAuthModal(){ authOverlay.classList.remove('open'); }
+document.getElementById('authClose').addEventListener('click', closeAuthModal);
+authOverlay.addEventListener('click', e => { if (e.target === authOverlay) closeAuthModal(); });
+document.getElementById('navLoginBtn').addEventListener('click', () => openAuthModal({type:'login'}));
+document.getElementById('footerLoginLink').addEventListener('click', (e) => { e.preventDefault(); openAuthModal({type:'login'}); });
+
+function requestApply(link){
+  if (currentUser){
+    window.open(link, '_blank', 'noopener');
+    return;
+  }
+  openAuthModal({type:'apply', link});
+}
+
+document.getElementById('sendOtpBtn').addEventListener('click', async () => {
+  const name = nameInput.value.trim();
+  const phone = phoneInput.value.trim();
+  const email = emailInput.value.trim();
+  const validEmail = /^\S+@\S+\.\S+$/.test(email);
+  const validPhone = phone.replace(/[^0-9]/g,'').length >= 10;
+
+  if (!name || !validPhone || !validEmail){
+    detailsError.textContent = 'Please fill in all fields correctly.';
+    detailsError.classList.add('show');
+    return;
+  }
+  detailsError.classList.remove('show');
+
+  const { error } = await sb.auth.signInWithOtp({ email, options:{ shouldCreateUser: true } });
+  if (error){
+    detailsError.textContent = error.message;
+    detailsError.classList.add('show');
+    return;
+  }
+  window._pendingProfile = { name, phone, email };
+  document.getElementById('otpSentTo').textContent = `We emailed a 6-digit code to ${email}.`;
+  stepDetails.style.display = 'none';
+  stepCode.style.display = '';
+  codeInput.focus();
+});
+
+document.getElementById('verifyOtpBtn').addEventListener('click', async () => {
+  const code = codeInput.value.trim();
+  const email = window._pendingProfile ? window._pendingProfile.email : emailInput.value.trim();
+  const { data, error } = await sb.auth.verifyOtp({ email, token: code, type: 'email' });
+  if (error){
+    codeError.classList.add('show');
+    return;
+  }
+  codeError.classList.remove('show');
+  currentUser = data.user;
+
+  if (window._pendingProfile){
+    await sb.from('profiles').upsert({
+      id: currentUser.id,
+      full_name: window._pendingProfile.name,
+      phone: window._pendingProfile.phone,
+      email: window._pendingProfile.email
+    });
+  }
+
+  closeAuthModal();
+  updateAuthUI();
+  renderJobs();
+
+  if (pendingAction && pendingAction.type === 'apply'){
+    window.open(pendingAction.link, '_blank', 'noopener');
+  }
+  pendingAction = null;
+});
+
+document.getElementById('resendOtp').addEventListener('click', (e) => {
+  e.preventDefault();
+  document.getElementById('sendOtpBtn').click();
+});
+
+function updateAuthUI(){
+  const area = document.getElementById('authArea');
+  if (currentUser){
+    area.innerHTML = `<div class="user-chip">👋 ${escapeHtml(currentUser.email)} <button id="logoutBtn">Logout</button></div>`;
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await sb.auth.signOut();
+      currentUser = null;
+      updateAuthUI();
+      renderJobs();
+    });
+  } else {
+    area.innerHTML = `<button class="login-btn" id="navLoginBtn">Login</button>`;
+    document.getElementById('navLoginBtn').addEventListener('click', () => openAuthModal({type:'login'}));
+  }
+}
+
+(async function init(){
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) currentUser = session.user;
+  updateAuthUI();
+  await loadData();
+})();
+</script>
+</body>
+</html>
