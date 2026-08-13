@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hire Healthcare Professionals | Corporate Doctor</title>
+<meta name="description" content="Hire healthcare professionals beyond clinical practice. Post a vacancy or discuss employer solutions with Corporate Doctor.">
+<link rel="canonical" href="https://corporatedoctor.in/employers.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+:root{--ink:#172331;--navy:#0056D2;--navy2:#00419E;--paper:#fff;--soft:#F4F8FD;--border:#E1E8F0;--muted:#667687;--success:#16734B;--radius:18px}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,sans-serif;color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit}
+:focus-visible{outline:3px solid #7DB7FF;outline-offset:3px}
+.wrap{max-width:1120px;margin:auto;padding:0 24px}
+header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.nav{height:70px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800}
+.brand-mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#0056D2,#4D8DF7);display:grid;place-items:center;color:#fff;font-weight:800}
+.brand-sub{font-size:.65rem;display:block;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-top:2px}
+.back{font-size:.86rem;font-weight:700;color:var(--muted)}
+.back:hover{color:var(--navy)}
+.hero{padding:82px 0 58px;background:linear-gradient(180deg,#F7FAFE 0%,#fff 100%)}
+.eyebrow{font-size:.75rem;letter-spacing:.13em;text-transform:uppercase;color:var(--navy);font-weight:800;margin-bottom:14px}
+h1,h2{font-family:Fraunces,Georgia,serif;font-weight:500;line-height:1.05;margin:0}
+h1{font-size:clamp(2.5rem,6vw,4.6rem);max-width:780px;letter-spacing:-.035em}
+.hero p{max-width:720px;font-size:1.08rem;line-height:1.75;color:var(--muted);margin:22px 0 30px}
+.actions{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:13px 19px;border-radius:999px;font-weight:800;font-size:.9rem;border:1px solid transparent;cursor:pointer}
+.btn.primary{background:var(--navy);color:#fff}
+.btn.primary:hover{background:var(--navy2)}
+.btn.secondary{border-color:var(--border);background:#fff;color:var(--ink)}
+.section{padding:68px 0}
+.section.soft{background:var(--soft)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{border:1px solid var(--border);border-radius:var(--radius);padding:26px;background:#fff;box-shadow:0 10px 30px rgba(21,42,66,.05)}
+.card h3{margin:0 0 10px;font-size:1.05rem}
+.card p{margin:0;color:var(--muted);line-height:1.65;font-size:.92rem}
+.number{width:34px;height:34px;border-radius:10px;background:#E8F2FF;color:var(--navy);display:grid;place-items:center;font-weight:800;margin-bottom:18px}
+.section-head{display:flex;justify-content:space-between;gap:30px;align-items:end;margin-bottom:28px}
+.section-head h2{font-size:clamp(2rem,4vw,3rem)}
+.section-head p{max-width:560px;color:var(--muted);line-height:1.65;margin:0}
+.form-wrap{display:grid;grid-template-columns:.8fr 1.2fr;gap:26px;align-items:start}
+.form-card{background:#fff;border:1px solid var(--border);border-radius:22px;padding:28px;box-shadow:0 18px 50px rgba(20,42,70,.08)}
+label{display:block;font-size:.8rem;font-weight:800;margin:0 0 7px}
+input,select,textarea{width:100%;border:1px solid #D6DFEA;border-radius:12px;padding:12px 13px;color:var(--ink);background:#fff;outline:none}
+input:focus,select:focus,textarea:focus{border-color:#7AAEF0;box-shadow:0 0 0 3px #EAF3FF}
+textarea{min-height:120px;resize:vertical}
+.field{margin-bottom:16px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.helper{font-size:.76rem;color:var(--muted);line-height:1.5}
+.notice{display:none;margin-top:15px;padding:12px 14px;border-radius:12px;font-size:.85rem;line-height:1.5}
+.notice.show{display:block}
+.notice.success{background:#ECF8F2;color:var(--success)}
+.notice.error{background:#FFF0EE;color:#A43B2B}
+.trust-list{list-style:none;padding:0;margin:22px 0 0;display:grid;gap:12px}
+.trust-list li{display:flex;gap:10px;align-items:flex-start;color:var(--muted);line-height:1.55;font-size:.92rem}
+.check{width:21px;height:21px;border-radius:50%;background:#E9F7F0;color:var(--success);display:grid;place-items:center;font-size:.72rem;font-weight:900;flex:none;margin-top:1px}
+footer{background:#071B31;color:#C8D3DE;padding:42px 0}
+footer .footer-row{display:flex;justify-content:space-between;gap:20px;align-items:center}
+footer strong{color:#fff}
+footer a{color:#C8D3DE}
+footer a:hover{color:#fff}
+@media(max-width:820px){.grid,.form-wrap{grid-template-columns:1fr}.hero{padding:62px 0 44px}.section{padding:52px 0}}
+@media(max-width:560px){.wrap{padding:0 18px}.row{grid-template-columns:1fr}.nav{height:62px}.back{font-size:.8rem}.hero p{font-size:1rem}.actions .btn{width:100%}footer .footer-row{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="/">
+      <span class="brand-mark">CD</span>
+      <span>Corporate Doctor<span class="brand-sub">Healthcare careers beyond the clinic</span></span>
+    </a>
+    <a class="back" href="/">← Back to Corporate Doctor</a>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">For Employers</div>
+    <h1>Hire healthcare professionals beyond the clinic.</h1>
+    <p>Reach healthcare graduates and professionals actively exploring non-clinical careers — from pharmacovigilance and clinical research to medical writing, medical affairs, healthtech and more.</p>
+    <div class="actions">
+      <a class="btn primary" href="#employer-form">Post a Vacancy</a>
+      <a class="btn secondary" href="#employer-form">Talk to Corporate Doctor</a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <div><div class="eyebrow">Why Corporate Doctor</div><h2>A focused talent channel for healthcare.</h2></div>
+      <p>Instead of competing for attention on a general job board, reach an audience already interested in healthcare careers outside traditional clinical practice.</p>
+    </div>
+    <div class="grid">
+      <div class="card"><div class="number">01</div><h3>Relevant talent</h3><p>Reach candidates across MBBS, Dentistry, AYUSH, Pharmacy, Nursing, Physiotherapy, Biotechnology and Life Sciences.</p></div>
+      <div class="card"><div class="number">02</div><h3>Career-context discovery</h3><p>Position your vacancy alongside career information, skills and job-ready learning so candidates can understand the role before applying.</p></div>
+      <div class="card"><div class="number">03</div><h3>Built for healthcare hiring</h3><p>Corporate Doctor is being built specifically around the transition from healthcare education into non-clinical careers.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section soft">
+  <div class="wrap">
+    <div class="section-head">
+      <div><div class="eyebrow">Employer Solutions</div><h2>Start simple. Scale with us.</h2></div>
+      <p>Whether you have one vacancy or a recurring hiring requirement, tell us what you're looking for and we'll follow up with the right next step.</p>
+    </div>
+    <div class="grid">
+      <div class="card"><h3>Post a Vacancy</h3><p>Share one open role with the Corporate Doctor audience.</p></div>
+      <div class="card"><h3>Recurring Hiring</h3><p>Discuss multiple roles, recurring recruitment or specialist healthcare talent requirements.</p></div>
+      <div class="card"><h3>Employer Partnership</h3><p>Explore longer-term ways to connect your organisation with healthcare professionals building non-clinical careers.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="employer-form">
+  <div class="wrap form-wrap">
+    <div>
+      <div class="eyebrow">Tell us what you need</div>
+      <h2>Let's discuss your hiring requirement.</h2>
+      <p style="color:var(--muted);line-height:1.7;max-width:500px;margin-top:18px">Submit the details below. Our team can follow up with the appropriate posting or employer solution.</p>
+      <ul class="trust-list">
+        <li><span class="check">✓</span><span>No commitment required to submit an enquiry.</span></li>
+        <li><span class="check">✓</span><span>Tell us the role, hiring volume and candidate profile you're looking for.</span></li>
+        <li><span class="check">✓</span><span>We can discuss vacancy posting, recurring hiring and employer partnerships.</span></li>
+      </ul>
+    </div>
+
+    <div class="form-card">
+      <form id="employerLeadForm">
+        <input type="text" name="website" id="website" autocomplete="off" tabindex="-1" style="position:absolute;left:-9999px;opacity:0" aria-hidden="true">
+        <div class="row">
+          <div class="field"><label for="name">Your name *</label><input id="name" name="name" required autocomplete="name" placeholder="e.g. Priya Sharma"></div>
+          <div class="field"><label for="company">Company / organisation *</label><input id="company" name="company" required autocomplete="organization" placeholder="e.g. ABC Healthcare"></div>
+        </div>
+        <div class="row">
+          <div class="field"><label for="email">Work email *</label><input id="email" name="email" type="email" required autocomplete="email" placeholder="name@company.com"></div>
+          <div class="field"><label for="phone">Phone / WhatsApp</label><input id="phone" name="phone" autocomplete="tel" placeholder="+91"></div>
+        </div>
+        <div class="row">
+          <div class="field"><label for="interest">What do you need? *</label>
+            <select id="interest" name="interest" required>
+              <option value="">Select an option</option>
+              <option>Post a Vacancy</option>
+              <option>Recurring Hiring</option>
+              <option>Employer Partnership</option>
+              <option>Other Employer Solution</option>
+            </select>
+          </div>
+          <div class="field"><label for="roles">Role / hiring volume</label><input id="roles" name="roles" placeholder="e.g. 3 PV Associates"></div>
+        </div>
+        <div class="field"><label for="message">Tell us about the requirement</label><textarea id="message" name="message" placeholder="Role, experience, location, work mode, timeline, or anything else we should know."></textarea></div>
+        <button class="btn primary" style="width:100%" type="submit" id="submitEmployerLead">Submit employer enquiry</button>
+        <div class="helper" style="margin-top:10px">We'll use these details only to respond to your employer enquiry. See our <a href="/privacy-policy" style="color:var(--navy);font-weight:700">Privacy Policy</a>.</div>
+        <div class="notice success" id="successNotice" role="status">Thanks — your enquiry has been submitted. We'll follow up using the details you provided.</div>
+        <div class="notice error" id="errorNotice" role="alert">We couldn't submit the form right now. Please try again in a moment or contact hello@corporatedoctor.in.</div>
+      </form>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap footer-row">
+    <div><strong>Corporate Doctor</strong><br><span>India's career platform for healthcare professionals beyond clinical practice.</span></div>
+    <div><a href="/">Candidate platform</a> · <a href="mailto:hello@corporatedoctor.in">Contact</a></div>
+  </div>
+</footer>
+
+<script>
+const SUPABASE_URL = "https://miyxnskyxsvtlbvxhfsl.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1peXhuc2t5eHN2dGxidnhoZnNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU2MDQ3MTcsImV4cCI6MjEwMTE4MDcxN30.gUGnX_PnjtNnDVyNOyIniKHHUPn46bEpldTMclo2J8Q";
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const form = document.getElementById('employerLeadForm');
+const submitBtn = document.getElementById('submitEmployerLead');
+const successNotice = document.getElementById('successNotice');
+const errorNotice = document.getElementById('errorNotice');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  successNotice.classList.remove('show');
+  errorNotice.classList.remove('show');
+
+  if (document.getElementById('website').value.trim()) return;
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Submitting…';
+
+  const fd = new FormData(form);
+  const payload = {
+    name: String(fd.get('name') || '').trim(),
+    company: String(fd.get('company') || '').trim(),
+    email: String(fd.get('email') || '').trim(),
+    phone: String(fd.get('phone') || '').trim() || null,
+    interest: String(fd.get('interest') || '').trim(),
+    roles: String(fd.get('roles') || '').trim() || null,
+    message: String(fd.get('message') || '').trim() || null,
+    source_page: window.location.href,
+    status: 'new'
+  };
+
+  try {
+    const { error } = await sb.from('employer_leads').insert(payload);
+    if (error) throw error;
+    form.reset();
+    successNotice.classList.add('show');
+    submitBtn.textContent = 'Enquiry submitted';
+  } catch (err) {
+    console.error(err);
+    errorNotice.classList.add('show');
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Submit employer enquiry';
+  }
+});
+</script>
+</body>
+</html>
