@@ -1651,13 +1651,20 @@ function courseCardHtml(course, categoryName){
     </div>`;
 }
 
+// Job rendering configuration.
+// Keep the free preview at six jobs; additional vacancies remain behind the
+// existing free-account unlock flow. Insert a relevant course after every two
+// rendered jobs when a matching course exists.
+const INITIAL_JOB_LIMIT = 6;
+const JOBS_PER_COURSE_BREAK = 2;
+
 function buildCardSequence(jobs){
   const out = [];
   let count = 0;
   for (const j of jobs){
     out.push({type:'job', data:j});
     count++;
-    if (count % JOBS_PER_COURSE_BREAK === 0){
+    if (JOBS_PER_COURSE_BREAK > 0 && count % JOBS_PER_COURSE_BREAK === 0){
       const course = courseFor(j.category_id);
       if (course) out.push({type:'course', data:course, category:j.category});
     }
@@ -1798,22 +1805,42 @@ function renderJobs(){
   const visibleJobs = currentUser ? list : list.slice(0, INITIAL_JOB_LIMIT);
   const hiddenJobs = currentUser ? [] : list.slice(INITIAL_JOB_LIMIT);
 
-  grid.innerHTML = buildCardSequence(visibleJobs)
-    .map(c => c.type === 'job' ? jobCardHtml(c.data) : courseCardHtml(c.data, c.category))
-    .join('');
-  bindJobDetailButtons(grid);
-  tagGraphyLinks(grid);
-
-  if (hiddenJobs.length){
-    lockedWrap.style.display = '';
-    lockedGrid.innerHTML = buildCardSequence(hiddenJobs)
+  try {
+    grid.innerHTML = buildCardSequence(visibleJobs)
       .map(c => c.type === 'job' ? jobCardHtml(c.data) : courseCardHtml(c.data, c.category))
       .join('');
-    bindJobDetailButtons(lockedGrid);
-    tagGraphyLinks(lockedGrid);
-  } else {
-    lockedGrid.innerHTML = '';
-    lockedWrap.style.display = 'none';
+    bindJobDetailButtons(grid);
+    tagGraphyLinks(grid);
+
+    if (hiddenJobs.length){
+      lockedWrap.style.display = '';
+      lockedGrid.innerHTML = buildCardSequence(hiddenJobs)
+        .map(c => c.type === 'job' ? jobCardHtml(c.data) : courseCardHtml(c.data, c.category))
+        .join('');
+      bindJobDetailButtons(lockedGrid);
+      tagGraphyLinks(lockedGrid);
+    } else {
+      lockedGrid.innerHTML = '';
+      lockedWrap.style.display = 'none';
+    }
+  } catch (renderError) {
+    console.error('[Corporate Doctor] Job card rendering failed:', renderError);
+
+    // Never leave the user with only a number and no jobs.
+    // Fall back to plain job cards without course insertions.
+    grid.innerHTML = visibleJobs.map(jobCardHtml).join('');
+    bindJobDetailButtons(grid);
+    tagGraphyLinks(grid);
+
+    if (hiddenJobs.length){
+      lockedWrap.style.display = '';
+      lockedGrid.innerHTML = hiddenJobs.map(jobCardHtml).join('');
+      bindJobDetailButtons(lockedGrid);
+      tagGraphyLinks(lockedGrid);
+    } else {
+      lockedGrid.innerHTML = '';
+      lockedWrap.style.display = 'none';
+    }
   }
 
   grid.dataset.jobsRendered = 'true';
@@ -2091,7 +2118,8 @@ async function verifyLoginOtp(){
 
     closeAuthModal();
     updateAuthUI();
-    renderJobs();
+    lastJobRenderSignature = '';
+    if (jobsDataLoaded) renderJobs();
 
     const authEvent =
       pendingAction && pendingAction.type === 'login'
