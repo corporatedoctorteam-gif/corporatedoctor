@@ -1431,6 +1431,8 @@ let courses = [];
 let allJobs = [];
 let activeCategory = 'all';
 let currentUser = null;
+let jobsDataLoaded = false;
+let lastJobRenderSignature = '';
 
 /* Restore an existing Supabase session on every page load.
    Users therefore do not need a new OTP merely because they returned later. */
@@ -1449,7 +1451,7 @@ async function restoreExistingSession(){
       updateAuthUI();
     }
 
-    if (typeof renderJobs === 'function') {
+    if (typeof renderJobs === 'function' && jobsDataLoaded) {
       renderJobs();
     }
   } catch (err) {
@@ -1493,6 +1495,8 @@ async function loadData(){
     verified: !!j.is_verified,
     expires: j.expires_at || j.expiry_date || j.valid_through || j.application_deadline || ''
   }));
+  jobsDataLoaded = true;
+  lastJobRenderSignature = '';
   renderCatTabs();
   populateJobCategoryFilter();
   bindJobFilters();
@@ -1506,7 +1510,29 @@ function renderCatTabs(){
     `<button class="cat-tab${n===activeCategory?' active':''}" data-cat="${escapeHtml(n)}">${n==='all'?'All':escapeHtml(n)}</button>`
   ).join('');
   el.querySelectorAll('.cat-tab').forEach(btn => {
-    btn.addEventListener('click', () => { activeCategory = btn.dataset.cat; renderCatTabs(); renderJobs(); });
+    btn.addEventListener('click', () => {
+      activeCategory = btn.dataset.cat || 'all';
+
+      // "All" means the complete vacancy catalogue, not the previous career filter.
+      if (activeCategory === 'all') {
+        const filterIds = [
+          'cdJobSearch','cdJobCategoryFilter','cdJobQualificationFilter',
+          'cdJobExperienceFilter','cdJobWorkModeFilter','cdJobLocationFilter','cdJobSalaryFilter'
+        ];
+        filterIds.forEach(id => {
+          const input = document.getElementById(id);
+          if (input) input.value = '';
+        });
+        jobSearchState = {
+          query:'', category:'', qualification:'', experience:'',
+          workMode:'', location:'', salary:''
+        };
+      }
+
+      lastJobRenderSignature = '';
+      renderCatTabs();
+      renderJobs();
+    });
   });
 }
 
@@ -1703,45 +1729,102 @@ function renderJobs(){
   const countEl = document.getElementById('jobCount');
   const lockedWrap = document.getElementById('lockedWrap');
   const lockedGrid = document.getElementById('lockedPreviewGrid');
+  if (!grid || !lockedWrap || !lockedGrid) return;
 
-  let list = allJobs.filter(j => activeCategory === 'all' || j.category === activeCategory);
+  // Never let the initial session restore overwrite real vacancy results
+  // while the Supabase vacancy request is still in flight.
+  if (!jobsDataLoaded){
+    grid.innerHTML = '<div class="load-state">Loading vacancies…</div>';
+    lockedWrap.style.display = 'none';
+    return;
+  }
+
+  const signature = JSON.stringify({
+    count: allJobs.length,
+    activeCategory,
+    filters: jobSearchState,
+    loggedIn: !!currentUser
+  });
+
+  // Avoid duplicate renders caused by auth/session events firing close together.
+  if (signature === lastJobRenderSignature && grid.dataset.jobsRendered === 'true') return;
+  lastJobRenderSignature = signature;
+
+  let list = allJobs.filter(j => activeCategory === 'all' || normalizeText(j.category) === normalizeText(activeCategory));
   list = list.filter(jobMatchesFilters);
 
   if (countEl){
-    const label = activeCategory === 'all' ? 'matching non-clinical healthcare jobs' : `matching ${activeCategory} jobs`;
+    const label = activeCategory === 'all'
+      ? 'matching non-clinical healthcare jobs'
+      : `matching ${activeCategory} jobs`;
     countEl.innerHTML = `<strong>${list.length}</strong> ${escapeHtml(label)} available`;
   }
 
   const filterStatus = document.getElementById('cdJobFilterStatus');
   if (filterStatus){
+    const hasFilters = !!(
+      jobSearchState.query ||
+      jobSearchState.category ||
+      jobSearchState.qualification ||
+      jobSearchState.experience ||
+      jobSearchState.workMode ||
+      jobSearchState.location ||
+      jobSearchState.salary ||
+      activeCategory !== 'all'
+    );
+
     filterStatus.textContent = list.length
-      ? `${list.length} ${list.length === 1 ? 'opportunity' : 'opportunities'} match your filters`
-      : 'No opportunities match your current filters';
+      ? (hasFilters
+          ? `${list.length} ${list.length === 1 ? 'opportunity' : 'opportunities'} match your filters`
+          : `${list.length} ${list.length === 1 ? 'opportunity' : 'opportunities'} available`)
+      : (hasFilters
+          ? 'No opportunities match your current filters'
+          : 'No vacancies are available right now');
   }
 
   if (!list.length){
-    grid.innerHTML = `<div class="empty-state"><b>No matching vacancies</b>Try clearing a filter or choosing a different career.</div>`;
+    grid.innerHTML = `
+      <div class="empty-state" data-empty-state="true">
+        <b>${allJobs.length ? 'No matching vacancies' : 'No vacancies are available right now'}</b>
+        <span>${allJobs.length
+          ? 'Try clearing a filter or choosing a different career.'
+          : 'Please check back soon for new healthcare opportunities.'}</span>
+      </div>`;
     lockedWrap.style.display = 'none';
+    grid.dataset.jobsRendered = 'true';
     return;
   }
 
   const visibleJobs = currentUser ? list : list.slice(0, INITIAL_JOB_LIMIT);
   const hiddenJobs = currentUser ? [] : list.slice(INITIAL_JOB_LIMIT);
 
-  grid.innerHTML = buildCardSequence(visibleJobs).map(c => c.type === 'job' ? jobCardHtml(c.data) : courseCardHtml(c.data, c.category)).join('');
+  grid.innerHTML = buildCardSequence(visibleJobs)
+    .map(c => c.type === 'job' ? jobCardHtml(c.data) : courseCardHtml(c.data, c.category))
+    .join('');
   bindJobDetailButtons(grid);
   tagGraphyLinks(grid);
 
   if (hiddenJobs.length){
     lockedWrap.style.display = '';
-    lockedGrid.innerHTML = buildCardSequence(hiddenJobs).map(c => c.type === 'job' ? jobCardHtml(c.data) : courseCardHtml(c.data, c.category)).join('');
+    lockedGrid.innerHTML = buildCardSequence(hiddenJobs)
+      .map(c => c.type === 'job' ? jobCardHtml(c.data) : courseCardHtml(c.data, c.category))
+      .join('');
     bindJobDetailButtons(lockedGrid);
     tagGraphyLinks(lockedGrid);
   } else {
+    lockedGrid.innerHTML = '';
     lockedWrap.style.display = 'none';
   }
-}
 
+  grid.dataset.jobsRendered = 'true';
+  window.CD_JOBS_STATE = {
+    loaded: true,
+    totalActive: allJobs.length,
+    matching: list.length,
+    activeCategory,
+    filters: {...jobSearchState}
+  };
+}
 
 function bindJobDetailButtons(scope){
   /* Vacancy cards are real crawlable links to job.html; global delegated tracking handles analytics. */
@@ -2129,10 +2212,12 @@ function bindJobFilters(){
     if (!el) return;
     el.addEventListener('input', () => {
       jobSearchState[key]=el.value;
+      lastJobRenderSignature = '';
       renderJobs();
     });
     el.addEventListener('change', () => {
       jobSearchState[key]=el.value;
+      lastJobRenderSignature = '';
       renderJobs();
     });
   });
@@ -2146,6 +2231,7 @@ function bindJobFilters(){
     jobSearchState={query:'',category:'',qualification:'',experience:'',workMode:'',location:'',salary:''};
     activeCategory='all';
     document.querySelectorAll('.cat-tab').forEach(t => t.classList.toggle('active', t.dataset.cat === 'all'));
+    lastJobRenderSignature = '';
     renderJobs();
   });
 
@@ -2155,6 +2241,7 @@ function bindJobFilters(){
       const select=document.getElementById('cdJobCategoryFilter');
       if (select) select.value=value;
       jobSearchState.category=value;
+      lastJobRenderSignature = '';
       renderJobs();
     });
   });
