@@ -823,7 +823,70 @@ fbq('track', 'PageView');
 @media(max-width:520px){.founder-guidance-offer{gap:12px}.founder-guidance-btn{width:100%;justify-content:center}.featured-course-grid{gap:12px}.featured-course-card{padding:20px;}}
 </style>
 
-<style>.jobs-section-cta{text-align:center;margin:28px auto;max-width:680px}.jobs-section-cta .primary-cta{display:inline-flex;padding:14px 22px;border-radius:999px;background:#0056D2;color:#fff;text-decoration:none;font-weight:800}.jobs-section-cta p{margin:10px 0;color:#6a7785;font-size:13px}</style></head>
+<style>.jobs-section-cta{text-align:center;margin:28px auto;max-width:680px}.jobs-section-cta .primary-cta{display:inline-flex;padding:14px 22px;border-radius:999px;background:#0056D2;color:#fff;text-decoration:none;font-weight:800}.jobs-section-cta p{margin:10px 0;color:#6a7785;font-size:13px}</style>
+<style id="career-roadmap-lead-magnet">
+  .career-roadmap-lead{
+    grid-column:1/-1;
+    margin-top:-2px;
+    padding:16px 18px;
+    border:1px solid #DCE5F0;
+    border-radius:14px;
+    background:linear-gradient(135deg,#F7FBFF 0%,#FFFFFF 100%);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+  }
+  .career-roadmap-lead-copy strong{
+    display:block;
+    color:var(--ink);
+    font-size:.84rem;
+    margin-bottom:3px;
+  }
+  .career-roadmap-lead-copy span{
+    display:block;
+    color:var(--ink-soft);
+    font-size:.72rem;
+    line-height:1.45;
+  }
+  .career-roadmap-lead a{
+    flex:none;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-height:40px;
+    padding:9px 14px;
+    border-radius:999px;
+    background:var(--navy);
+    color:#fff;
+    text-decoration:none;
+    font-size:.72rem;
+    font-weight:800;
+    white-space:nowrap;
+  }
+  .career-roadmap-lead a:hover{background:var(--coral);}
+  @media(max-width:620px){
+    .career-roadmap-lead{flex-direction:column;align-items:flex-start;}
+    .career-roadmap-lead a{width:100%;}
+  }
+</style>
+
+
+<style id="auth-accessibility">
+  .sr-only{
+    position:absolute!important;
+    width:1px!important;
+    height:1px!important;
+    padding:0!important;
+    margin:-1px!important;
+    overflow:hidden!important;
+    clip:rect(0,0,0,0)!important;
+    white-space:nowrap!important;
+    border:0!important;
+  }
+</style>
+
+</head>
 <body>
 <header class="site">
 <div class="nav-inner">
@@ -842,7 +905,7 @@ fbq('track', 'PageView');
 <section class="hero">
 <div class="wrap hero-inner">
 <div class="hero-tagline" aria-label="Corporate Doctor tagline">One Degree. Infinite Possibilities</div>
-<span class="eyebrow">India’s ONLY CAREER PLATFORM for Healthcare Professionals</span>
+<span class="eyebrow">India’s only career platform built specifically for healthcare professionals exploring non-clinical careers.</span>
 <h1>Your healthcare degree opens more doors than <em>the clinic</em>.</h1>
 
 <div class="hero-actions">
@@ -913,6 +976,18 @@ fbq('track', 'PageView');
 </select>
 </label>
 <button class="btn-primary" type="submit">Show My Career Matches →</button>
+
+<div class="career-roadmap-lead">
+  <div class="career-roadmap-lead-copy">
+    <strong>Download Free Non-Clinical Career Roadmaps 2026</strong>
+    <span>MBBS, AYUSH, BDS, Physiotherapy, Pharmacy, Nursing &amp; Life Sciences — explore practical career paths beyond the clinic.</span>
+  </div>
+  <a href="https://academy.corporatedoctor.in/products"
+     target="_blank"
+     rel="noopener noreferrer"
+     id="careerRoadmapDownloadLink"
+     data-track="career_roadmap_click">Get the Free Roadmaps →</a>
+</div>
 
 </form>
 <div class="career-finder-results" hidden="" id="careerFinderResults"></div>
@@ -1252,25 +1327,26 @@ LinkedIn →</a>
 <span><a href="#" id="footerLoginLink" style="color:#B9C7D4;">Login</a></span>
 </div>
 </footer>
-<div class="modal-overlay" id="authOverlay">
-<div class="modal-box">
-<button class="modal-close" id="authClose">✕</button>
+<div aria-describedby="authModalDescription" aria-labelledby="authModalTitle" aria-modal="true" class="modal-overlay" id="authOverlay" role="dialog">
+<div class="modal-box" tabindex="-1">
+<button aria-label="Close authentication dialog" class="modal-close" id="authClose" type="button">✕</button>
 <div id="stepDetails">
-<h4>Create your free Corporate Doctor account</h4>
-<p class="modal-sub">Save jobs, get relevant opportunities and keep your career preferences in one place. No password required. Your phone / WhatsApp number helps us contact you about relevant opportunities.</p>
+<h4 id="authModalTitle">Create your free Corporate Doctor account</h4>
+<p class="modal-sub" id="authModalDescription">Save jobs, get relevant opportunities and keep your career preferences in one place. No password required. Your phone / WhatsApp number helps us contact you about relevant opportunities.</p>
 <div class="modal-error" id="detailsError">Please fill in all fields correctly.</div>
-<label>Full name</label>
+<label for="nameInput">Full name</label>
 <input id="nameInput" placeholder="Dr. Jane Doe" type="text"/>
-<label>Phone / WhatsApp <span style="color:#C43D32">*</span></label>
+<label for="phoneInput">Phone / WhatsApp <span style="color:#C43D32">*</span></label>
 <input id="phoneInput" placeholder="+91 98765 43210" type="tel" autocomplete="tel" inputmode="tel" required/>
-<label>Email</label>
+<label for="emailInput">Email</label>
 <input id="emailInput" placeholder="you@email.com" type="email"/>
 <button class="modal-submit" id="sendOtpBtn">Send OTP to Email</button>
 </div>
 <div id="stepCode" style="display:none;">
-<h4>Enter the code</h4>
+<h4 id="otpModalTitle">Enter the code</h4>
 <p class="modal-sub" id="otpSentTo">We emailed you a 6-digit code.</p>
 <div class="modal-error" id="codeError">Incorrect or expired code. Try again.</div>
+<label for="codeInput" class="sr-only">One-time verification code</label>
 <input id="codeInput" inputmode="numeric" autocomplete="one-time-code" maxlength="8" pattern="[0-9]*" placeholder="Enter the 6-digit code from your email" type="text"/>
 <button class="modal-submit" id="verifyOtpBtn">Verify &amp; Continue</button>
 <p class="modal-note"><a href="#" id="resendOtp" style="font-weight:700;color:var(--navy);">Resend code</a></p>
@@ -1847,8 +1923,17 @@ const codeInput = document.getElementById('codeInput');
 const detailsError = document.getElementById('detailsError');
 const codeError = document.getElementById('codeError');
 
+let authReturnFocus = null;
+
+function getAuthFocusableElements(){
+  return [...authOverlay.querySelectorAll(
+    'button:not([disabled]), input:not([disabled]), a[href], select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+  )].filter(el => el.offsetParent !== null);
+}
+
 function openAuthModal(action){
   pendingAction = action;
+  authReturnFocus = document.activeElement;
   stepDetails.style.display = '';
   stepCode.style.display = 'none';
   detailsError.classList.remove('show');
@@ -1863,11 +1948,47 @@ function openAuthModal(action){
     : 'We’ll email you a 6-digit code. Quick, free, no password to remember.';
 
   authOverlay.classList.add('open');
-  nameInput.focus();
+  document.body.style.overflow = 'hidden';
+  requestAnimationFrame(() => nameInput.focus());
 }
-function closeAuthModal(){ authOverlay.classList.remove('open'); }
+
+function closeAuthModal(){
+  authOverlay.classList.remove('open');
+  document.body.style.overflow = '';
+  if (authReturnFocus && typeof authReturnFocus.focus === 'function'){
+    requestAnimationFrame(() => authReturnFocus.focus());
+  }
+  authReturnFocus = null;
+}
+
 document.getElementById('authClose').addEventListener('click', closeAuthModal);
 authOverlay.addEventListener('click', e => { if (e.target === authOverlay) closeAuthModal(); });
+
+document.addEventListener('keydown', e => {
+  if (!authOverlay.classList.contains('open')) return;
+
+  if (e.key === 'Escape'){
+    e.preventDefault();
+    closeAuthModal();
+    return;
+  }
+
+  if (e.key === 'Tab'){
+    const focusable = getAuthFocusableElements();
+    if (!focusable.length) return;
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    if (e.shiftKey && document.activeElement === first){
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last){
+      e.preventDefault();
+      first.focus();
+    }
+  }
+});
 document.getElementById('navLoginBtn').addEventListener('click', () => { window.cdTrack('login_cta_click', { location:'header' }); openAuthModal({type:'login'}); });
 document.getElementById('footerLoginLink').addEventListener('click', (e) => { e.preventDefault(); window.cdTrack('login_cta_click', { location:'footer' }); openAuthModal({type:'login'}); });
 
@@ -2314,6 +2435,16 @@ sb.auth.onAuthStateChange((event, session) => {
 <script>
 /* ===== Career Finder: real scoring against the 12 Corporate Doctor career profiles ===== */
 (function(){
+  
+const careerRoadmapDownloadLink = document.getElementById('careerRoadmapDownloadLink');
+if (careerRoadmapDownloadLink){
+  careerRoadmapDownloadLink.addEventListener('click', () => {
+    if (typeof window.cdTrack === 'function'){
+      window.cdTrack('career_roadmap_click', { location:'career_finder' });
+    }
+  });
+}
+
   const finder = document.getElementById('careerFinderForm');
   const results = document.getElementById('careerFinderResults');
   const openButtons = [document.getElementById('heroCareerFinderBtn')].filter(Boolean);
