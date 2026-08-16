@@ -28,6 +28,8 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);backdro
 .modal-overlay{position:fixed;inset:0;background:rgba(8,27,51,.58);display:none;align-items:center;justify-content:center;z-index:200;padding:20px}.modal-overlay.open{display:flex}.modal-box{background:#fff;border-radius:20px;padding:30px;max-width:410px;width:100%;position:relative;box-shadow:0 30px 70px rgba(8,27,51,.28)}.modal-close{position:absolute;right:15px;top:15px;border:0;background:var(--paper);color:var(--muted);width:32px;height:32px;border-radius:9px;font-size:18px}.modal-box h3{font:700 22px Fraunces,Georgia,serif;color:var(--navy);margin:0 35px 7px 0}.modal-sub{color:var(--muted);font-size:13px;line-height:1.5;margin:0 0 20px}.modal-box label{display:block;font-size:11px;font-weight:800;color:var(--muted);margin:0 0 5px}.modal-box input{width:100%;height:44px;border:1px solid #D9E1EA;border-radius:10px;padding:0 12px;margin-bottom:13px;outline:0}.modal-box input:focus{border-color:#78A9EE;box-shadow:0 0 0 3px #E8F2FF}.modal-submit{width:100%;height:45px;border:0;border-radius:10px;background:var(--blue);color:#fff;font-weight:800}.modal-error{display:none;color:#A43B2E;background:#FFF1EE;border:1px solid #F1CFC8;border-radius:9px;padding:9px 10px;font-size:12px;line-height:1.4;margin:-2px 0 12px}.modal-error.show{display:block}.modal-note{font-size:11px;color:var(--muted);text-align:center;margin:11px 0 0}.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
 @media(max-width:720px){.wrap{width:min(100% - 28px,1120px)}.nav{min-height:64px}.brand img{width:160px}.nav-home{display:none}.toolbar{top:64px}.searchbar{grid-template-columns:1fr 1fr}.searchbox{grid-column:1/-1}.filter-grid{grid-template-columns:1fr 1fr}.top{flex-direction:column}.tag{align-self:flex-start}.card{padding:19px}.cardfoot{align-items:flex-end}}
 @media(max-width:480px){.searchbar{grid-template-columns:1fr}.filter-grid{grid-template-columns:1fr}.filter-foot{flex-direction:column;align-items:stretch}.clear-btn{width:100%}.resultsbar{align-items:flex-start;flex-direction:column}.cardfoot{flex-direction:column;align-items:stretch}.view{width:100%}}
+.page-size-note{font-size:.78rem;font-weight:600;color:#6b7d90;background:#f4f8fc;border:1px solid #dfe8f2;padding:8px 12px;border-radius:999px;white-space:nowrap}
+@media(max-width:640px){.page-size-note{display:none}}
 </style>
 </head>
 <body>
@@ -55,7 +57,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);backdro
     <div class="filter-foot"><span class="filter-status" id="filterStatus">Showing all opportunities</span><button class="clear-btn" id="clearFilters" type="button">Clear all filters</button></div>
   </div>
 </div></section>
-<section class="wrap"><div class="resultsbar"><div><h2>Current opportunities</h2><p id="count">Loading vacancies…</p></div></div><div class="jobs" id="jobs"><div class="loading">Loading vacancies…</div></div><div class="pagination" id="pagination"></div></section>
+<section class="wrap"><div class="resultsbar"><div><h2>Current opportunities</h2><p id="count">Loading vacancies…</p></div><span class="page-size-note">10 vacancies per page</span></div><div class="jobs" id="jobs"><div class="loading">Loading vacancies…</div></div><div class="pagination" id="pagination"></div></section>
 </div>
 </main>
 <div class="modal-overlay" id="authOverlay" role="dialog" aria-modal="true" aria-labelledby="authTitle" aria-describedby="authDescription">
@@ -68,7 +70,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);backdro
 const SUPABASE_URL='https://miyxnskyxsvtlbvxhfsl.supabase.co';
 const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1peXhuc2t5eHN2dGxidnhoZnNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU2MDQ3MTcsImV4cCI6MjEwMTE4MDcxN30.gUGnX_PnjtNnDVyNOyIniKHHUPn46bEpldTMclo2J8Q';
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
-let currentUser=null,allJobs=[],filtered=[],page=1;const PAGE_SIZE=20;const state={q:'',career:'',qualification:'',experience:'',work:'',location:'',salary:'',sort:'newest'};
+let currentUser=null,allJobs=[],filtered=[],page=1;const PAGE_SIZE=10;const state={q:'',career:'',qualification:'',experience:'',work:'',location:'',salary:'',sort:'newest'};
 const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])),norm=v=>String(v??'').toLowerCase().trim();
 function ago(v){if(!v)return'Recently posted';const d=new Date(v);if(isNaN(d))return'Recently posted';const n=Math.max(0,Math.floor((Date.now()-d.getTime())/86400000));return n===0?'Today':n===1?'Yesterday':n+' days ago'}
 function slug(v){return String(v||'healthcare-opportunity').toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,80)||'healthcare-opportunity'}
