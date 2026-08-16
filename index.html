@@ -480,6 +480,7 @@ fbq('track', 'PageView');
     .membership-copy{text-align:left;}
   }
 
+.footer-tagline{font-family:'Fraunces',serif;font-size:1.05rem;font-weight:700;color:#fff;margin:0 0 7px;}
 </style>
 <style>
 .cd-job-search-panel{background:#fff;border:1px solid var(--border);border-radius:16px;padding:16px;margin:0 0 22px;box-shadow:0 8px 24px rgba(9,35,63,.04)}
@@ -909,7 +910,7 @@ fbq('track', 'PageView');
 <main id="top">
 <section class="hero">
 <div class="wrap hero-inner">
-<div class="hero-tagline" aria-label="Corporate Doctor tagline">One Degree. Infinite Possibilities</div>
+<div class="hero-tagline" aria-label="Corporate Doctor tagline">One Degree, Infinite Possibilities</div>
 <span class="eyebrow">India’s only career platform built specifically for healthcare professionals exploring non-clinical careers.</span>
 <h1>Your healthcare degree opens more doors than <em>the clinic</em>.</h1>
 
@@ -1261,7 +1262,7 @@ LinkedIn →</a>
 <p>A few things healthcare professionals commonly want to know before exploring a non-clinical career.</p>
 </div>
 <div class="faq-grid">
-<details><summary>Is Corporate Doctor only for MBBS doctors?</summary><p>No. The platform is designed for MBBS, BDS, AYUSH, BPT, Nursing, Pharmacy, Biotechnology and Life Sciences professionals exploring careers One Degree. Infinite Possibilities.</p></details>
+<details><summary>Is Corporate Doctor only for MBBS doctors?</summary><p>No. The platform is designed for MBBS, BDS, AYUSH, BPT, Nursing, Pharmacy, Biotechnology and Life Sciences professionals exploring careers One Degree, Infinite Possibilities.</p></details>
 <details><summary>Can I browse jobs for free?</summary><p>Yes. You can browse the free job feed and use the search and filters. A free account can unlock the full vacancy list and lets you save jobs.</p></details>
 <details><summary>Are all jobs verified?</summary><p>No. We distinguish between curated and verified listings. Curated means selected for relevance; the verified badge is reserved for vacancies explicitly checked by Corporate Doctor.</p></details>
 <details><summary>Do I need clinical experience to move into a non-clinical role?</summary><p>It depends on the role and employer. Each vacancy should be evaluated against its stated eligibility and experience requirements.</p></details>
@@ -1276,7 +1277,7 @@ LinkedIn →</a>
 <div class="footer-brand">
 <img alt="Corporate Doctor" class="footer-logo" src="assets/corporate-doctor-logo.png"/ loading="eager" decoding="async">
 </div>
-<p>Non-clinical career vacancies and guidance for every healthcare graduate ready to build a career beyond the clinic.</p>
+<p class="footer-tagline">One Degree, Infinite Possibilities</p><p>Non-clinical career vacancies and guidance for every healthcare graduate ready to build a career beyond the clinic.</p>
 <div class="degree-tags">
 <span>Doctors (MBBS · AYUSH)</span><span>Dentists</span><span>Pharmacy</span>
 <span>Nursing</span><span>Physiotherapy</span><span>Biotechnology</span><span>Life Sciences</span>
@@ -1765,9 +1766,17 @@ function renderJobs(){
   const hiddenCount=Math.max(0,list.length-INITIAL_JOB_LIMIT);
   grid.innerHTML=visibleJobs.map(jobCardHtml).join('');
   bindJobDetailButtons(grid);
-  if(!currentUser&&hiddenCount>0){
+  if(hiddenCount>0){
     lockedWrap.style.display='';
-    const p=lockedWrap.querySelector('p');if(p)p.textContent=`${hiddenCount} more ${hiddenCount===1?'opportunity is':'opportunities are'} waiting. Log in free to browse the complete vacancy database.`;
+    const p=lockedWrap.querySelector('p');
+    const btn=lockedWrap.querySelector('#unlockBtn');
+    if(p)p.textContent=currentUser
+      ? `You’re viewing the 8 most recent opportunities. Browse the complete vacancy database on the jobs marketplace.`
+      : `You’re viewing the 8 most recent opportunities. Log in free to browse the complete vacancy database.`;
+    if(btn){
+      btn.textContent=currentUser ? 'Browse all vacancies →' : 'Login to Unlock All Vacancies →';
+      
+    }
   }else{lockedWrap.style.display='none';}
   grid.dataset.jobsRendered='true';
   window.CD_JOBS_STATE={loaded:true,totalActive:allJobs.length,matching:list.length,homepageShown:visibleJobs.length,activeCategory:'all',filters:{...jobSearchState}};
@@ -1840,7 +1849,7 @@ document.addEventListener('keydown', e => {
 window.addEventListener('popstate', () => closeJobDetail(false));
 
 
-document.getElementById('unlockBtn').addEventListener('click', () => { window.cdTrack('unlock_cta_click', { location:'jobs_gate' }); openAuthModal({type:'unlock'}); });
+document.getElementById('unlockBtn').addEventListener('click', () => { if(currentUser){ window.location.href='jobs.html'; } else { window.cdTrack('unlock_cta_click',{location:'homepage_job_gate'}); openAuthModal({type:'unlock'}); } });
 
 const authOverlay = document.getElementById('authOverlay');
 const stepDetails = document.getElementById('stepDetails');
