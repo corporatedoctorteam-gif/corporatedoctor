@@ -81,7 +81,7 @@ function render(j){
     '<div class="section"><h2>Skills that matter</h2><div class="skills">'+ss.map(x=>'<span class="skill">'+esc(x)+'</span>').join('')+'</div></div>'+ 
     '<div class="section"><h2>Who this role may suit</h2>'+degreeMarkup+'</div>'+ 
     '<a class="home-return" href="/">← Return to Corporate Doctor home</a>'+ 
-    '</div><aside class="snapshot"><h3>Role snapshot</h3>'+(j.salary?'<div class="salary">'+esc(j.salary)+'</div>':'')+ '<div class="stat"><small>Career</small><strong>'+esc(j.category)+'</strong></div><div class="stat"><small>Location</small><strong>'+esc(j.location||'Not specified')+'</strong></div><div class="stat"><small>Work mode</small><strong>'+esc(j.workMode||'Not specified')+'</strong></div><div class="stat"><small>Experience</small><strong>'+esc(j.experience||'Not specified')+'</strong></div><div class="stat"><small>Employment</small><strong>'+esc(j.type||'Full-time')+'</strong></div><div class="actions"><a class="btn primary" href="#" data-apply-link="'+esc(j.link||'#')+'" onclick="handleJobApply(event)">Apply Now →</a><a class="btn secondary" href="'+(courseActive?esc(courseUrl):'#')+'" target="_blank" rel="noopener noreferrer" data-interest-course="'+esc(courseName)+'" onclick="return handleCourseAction(event,this)">Learn the skills required for this role →</a></div>'+ 
+    '</div><aside class="snapshot"><h3>Role snapshot</h3>'+(j.salary?'<div class="salary">'+esc(j.salary)+'</div>':'')+ '<div class="stat"><small>Career</small><strong>'+esc(j.category)+'</strong></div><div class="stat"><small>Location</small><strong>'+esc(j.location||'Not specified')+'</strong></div><div class="stat"><small>Work mode</small><strong>'+esc(j.workMode||'Not specified')+'</strong></div><div class="stat"><small>Experience</small><strong>'+esc(j.experience||'Not specified')+'</strong></div><div class="stat"><small>Employment</small><strong>'+esc(j.type||'Full-time')+'</strong></div><div class="actions"><a class="btn primary" href="#" data-apply-link="'+esc(j.link||'#')+'" onclick="handleJobApply(event)">Apply Now →</a><a class="btn secondary" href="'+(courseActive?esc(courseUrl):'#')+'" target="_blank" rel="noopener noreferrer" data-interest-course="'+esc(courseName)+'" >Learn the skills required for this role →</a></div>'+ 
     (c?'<div class="learn"><div class="kicker">'+(courseActive?'BECOME JOB-READY':'NEXT BATCH')+'</div><h3>'+esc(courseName)+'</h3><p>'+(courseActive?'Built for this career area, with practical preparation aligned to the skills shown above and the kinds of roles in the Corporate Doctor job feed.':'Register to the next batch for this Job Ready System.')+'</p>'+(courseActive?'<a href="'+esc(courseUrl)+'" target="_blank" rel="noopener noreferrer">Explore program →</a>':'<button class="learn-interest" type="button" data-interest-course="'+esc(courseName)+'">Register to the next batch →</button>')+'</div>':'')+
     '<p class="fine">Corporate Doctor curates opportunities for relevance. Hiring decisions remain with the employer.</p></aside></section>';
   document.getElementById('jobPostingSchema').textContent=JSON.stringify(structured(j));
@@ -106,7 +106,43 @@ async function handleJobApply(event){
 async function openCourseInterest(courseName){const o=document.getElementById('courseInterestOverlay');document.getElementById('interestCourse').value=courseName;document.getElementById('interestCourseLabel').textContent='Register to the next batch for the '+courseName+'.';document.getElementById('interestStatus').textContent='';o.classList.add('open');o.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';try{const {data:{session}}=await sb.auth.getSession();if(session){document.getElementById('interestName').value=session.user.user_metadata?.full_name||'';document.getElementById('interestEmail').value=session.user.email||'';const stored=session.user.user_metadata?.phone||localStorage.getItem('cd_profile_phone')||'';const m=String(stored).match(/^(\+\d+)(\d{7,15})$/);if(m){const opt=[...document.getElementById('interestCountryCode').options].find(x=>x.value===m[1]);if(opt){document.getElementById('interestCountryCode').value=m[1];document.getElementById('interestPhone').value=m[2]}}else document.getElementById('interestPhone').value=stored.replace(/\D/g,'');}}catch(e){}setTimeout(()=>document.getElementById('interestName').focus(),40)}
 function handleCourseAction(event,el){if(!el.getAttribute('href')||el.getAttribute('href')==='#'){event.preventDefault();openCourseInterest(el.dataset.interestCourse||'Upcoming Job Ready System');return false}try{gtag('event','course_click',{source:'job_detail',job_id:String(id),career:el.dataset.interestCourse||''})}catch(e){}return true}
 function closeCourseInterest(){const o=document.getElementById('courseInterestOverlay');o.classList.remove('open');o.setAttribute('aria-hidden','true');document.body.style.overflow=''}
-document.getElementById('interestClose')?.addEventListener('click',closeCourseInterest);document.getElementById('courseInterestOverlay')?.addEventListener('click',e=>{if(e.target.id==='courseInterestOverlay')closeCourseInterest()});document.addEventListener('click',e=>{const b=e.target.closest?.('.learn-interest');if(b)openCourseInterest(b.dataset.interestCourse||'Upcoming Job Ready System')});document.getElementById('courseInterestForm')?.addEventListener('submit',async e=>{e.preventDefault();const status=document.getElementById('interestStatus'),btn=e.currentTarget.querySelector('button[type=submit]'),old=btn.textContent,cc=document.getElementById('interestCountryCode').value,digits=document.getElementById('interestPhone').value.replace(/\D/g,'');const valid=cc==='+91'?/^[6-9]\d{9}$/.test(digits):/^\d{7,15}$/.test(digits);const payload={course_name:document.getElementById('interestCourse').value,full_name:document.getElementById('interestName').value.trim(),phone:cc+digits,email:document.getElementById('interestEmail').value.trim()||null};if(!payload.full_name||!valid){status.className='interest-status error';status.textContent='Please enter your full name and a valid mobile number.';return}btn.disabled=true;btn.textContent='Registering…';try{const {data:{session}}=await sb.auth.getSession();if(session)payload.user_id=session.user.id;const {error}=await sb.from('course_interest_leads').insert(payload);if(error)throw error;status.className='interest-status success';status.textContent='Thanks — you’re registered for the next batch.';e.currentTarget.reset();document.getElementById('interestCourse').value=payload.course_name;document.getElementById('interestCountryCode').value='+91'}catch(err){console.error('[Course Interest]',err);status.className='interest-status error';status.textContent='We couldn’t save your registration. Please try again in a moment.'}finally{btn.disabled=false;btn.textContent=old}});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('courseInterestOverlay')?.classList.contains('open'))closeCourseInterest()});
+document.getElementById('interestClose')?.addEventListener('click',closeCourseInterest);document.getElementById('courseInterestOverlay')?.addEventListener('click',e=>{if(e.target.id==='courseInterestOverlay')closeCourseInterest()});document.addEventListener('click',e=>{
+  const b=e.target.closest?.('.learn-interest');
+  if(b){openCourseInterest(b.dataset.interestCourse||'Upcoming Job Ready System');return}
+  const a=e.target.closest?.('a[data-interest-course]');
+  if(a && (!a.getAttribute('href') || a.getAttribute('href')==='#')){
+    e.preventDefault();
+    openCourseInterest(a.dataset.interestCourse||'Upcoming Job Ready System');
+  }
+});document.getElementById('courseInterestForm')?.addEventListener('submit',async e=>{
+  e.preventDefault();
+  const status=document.getElementById('interestStatus'),btn=e.currentTarget.querySelector('button[type=submit]'),old=btn.textContent;
+  const cc=document.getElementById('interestCountryCode').value;
+  const digits=document.getElementById('interestPhone').value.replace(/\D/g,'');
+  const valid=cc==='+91'?/^[6-9]\d{9}$/.test(digits):/^\d{7,15}$/.test(digits);
+  const payload={course_name:document.getElementById('interestCourse').value,full_name:document.getElementById('interestName').value.trim(),phone:cc+digits,email:document.getElementById('interestEmail').value.trim()||null};
+  if(!payload.full_name||!valid){status.className='interest-status error';status.textContent='Please enter your full name and a valid mobile number.';return}
+  btn.disabled=true;btn.textContent='Registering…';status.className='interest-status';status.textContent='';
+  try{
+    const {data:{session}}=await sb.auth.getSession();
+    if(session) payload.user_id=session.user.id;
+    let result=await sb.from('course_interest_leads').insert(payload);
+    if(result.error){
+      const transient=/fetch|network|timeout|timed out|gateway|503|502|504/i.test(String(result.error.message||''));
+      if(transient){
+        await new Promise(r=>setTimeout(r,500));
+        result=await sb.from('course_interest_leads').insert(payload);
+      }
+    }
+    if(result.error) throw result.error;
+    status.className='interest-status success';status.textContent='Thanks — you’re registered for the next batch.';
+    e.currentTarget.reset();document.getElementById('interestCourse').value=payload.course_name;document.getElementById('interestCountryCode').value='+91';
+  }catch(err){
+    console.error('[Course Interest]',err);
+    status.className='interest-status error';
+    status.textContent='We couldn’t save your registration. Please try again in a moment.';
+  }finally{btn.disabled=false;btn.textContent=old}
+});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('courseInterestOverlay')?.classList.contains('open'))closeCourseInterest()});
 
 load();
 
