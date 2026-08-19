@@ -8,7 +8,7 @@
 <link rel="canonical" href="https://corporatedoctor.in/jobs.html">
 <meta property="og:type" content="website"><meta property="og:site_name" content="Corporate Doctor"><meta property="og:title" content="Non-Clinical Healthcare Jobs in India | Corporate Doctor"><meta property="og:description" content="Browse curated non-clinical healthcare jobs in India by career area, qualification, experience, location and work mode. One Degree, Infinite Possibilities."><meta property="og:url" content="https://corporatedoctor.in/jobs.html">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Non-Clinical Healthcare Jobs in India | Corporate Doctor"><meta name="twitter:description" content="Browse curated non-clinical healthcare jobs in India. One Degree, Infinite Possibilities.">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6J44EC8FW6"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){window.dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-6J44EC8FW6');</script>
 <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','1411403617722272');fbq('track','PageView');</script>
@@ -88,7 +88,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);backdro
     <div class="filter-foot"><span class="filter-status" id="filterStatus">Showing all opportunities</span><div class="filter-actions"><button class="clear-btn" id="clearFilters" type="button">Clear all filters</button><button class="apply-filters-btn" id="applyFilters" type="button">Apply filters →</button></div></div>
   </div>
 </div></section>
-<section class="wrap"><div class="resultsbar"><div><h2>Current opportunities</h2><p id="count" class="js-loading-vacancies">Loading vacancies<span class="loading-dots">...</span></p></div><span class="page-size-note">10 vacancies per page</span></div><div class="jobs" id="jobs"><div class="loading js-loading-vacancies">Loading vacancies<span class="loading-dots">...</span></div></div><div class="pagination" id="pagination"></div><div class="home-return-wrap"><a class="home-return" href="/">← Back to Corporate Doctor home</a></div></section>
+<section class="wrap"><div class="resultsbar"><div><h2>Current opportunities</h2><p id="count" class="js-loading-vacancies">Loading vacancies<span class="loading-dots">...</span></p></div><span class="page-size-note">100+ vacancies per page</span></div><div class="jobs" id="jobs"><div class="loading js-loading-vacancies">Loading vacancies<span class="loading-dots">...</span></div></div><div class="pagination" id="pagination"></div><div class="home-return-wrap"><a class="home-return" href="/">← Back to Corporate Doctor home</a></div></section>
 </div>
 </main>
 <footer class="jobs-footer"><div class="wrap"><div class="footer-brand"><img src="/assets/corporate-doctor-logo.webp" alt="Corporate Doctor" width="190" height="33" loading="lazy" decoding="async"></div><div class="footer-tagline">One Degree, Infinite Possibilities</div><p>Non-clinical healthcare careers, curated opportunities and practical guidance for professionals building a career beyond the clinic.</p><div class="jobs-footer-links"><a href="/privacy-policy">Privacy Policy</a><a href="/terms">Terms</a><a href="/refund-policy">Refund Policy</a><a href="/disclaimer">Disclaimer</a><a href="/">Home</a></div></div></footer>
@@ -99,6 +99,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);backdro
   </div>
 </div>
 <script>
+document.addEventListener('DOMContentLoaded',()=>{
 const SUPABASE_URL='https://miyxnskyxsvtlbvxhfsl.supabase.co';
 const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1peXhuc2t5eHN2dGxidnhoZnNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU2MDQ3MTcsImV4cCI6MjEwMTE4MDcxN30.gUGnX_PnjtNnDVyNOyIniKHHUPn46bEpldTMclo2J8Q';
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
@@ -148,5 +149,6 @@ sb.auth.onAuthStateChange((event,session)=>{currentUser=session?.user||null;upda
   update();
   window.setInterval(update,420);
 })();
+});
 </script>
 </body></html>
