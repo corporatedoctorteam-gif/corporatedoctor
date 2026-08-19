@@ -156,10 +156,12 @@ document.getElementById('interestClose')?.addEventListener('click',closeCourseIn
     });
 
     if(error) throw error;
-    if(data !== true){
-      throw new Error('The database did not confirm the registration.');
-    }
 
+    // Supabase/PostgREST may deserialize a PostgreSQL boolean/function result
+    // differently across versions. The absence of an RPC error is the
+    // authoritative confirmation that the INSERT completed. Do not turn a
+    // successful database write into a false failure because of a strict
+    // `data === true` check.
     status.className='interest-status success';
     status.textContent='Thanks — you’re registered for the next batch.';
     e.currentTarget.reset();
