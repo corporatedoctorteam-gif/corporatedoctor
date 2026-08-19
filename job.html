@@ -126,15 +126,24 @@ document.getElementById('interestClose')?.addEventListener('click',closeCourseIn
   try{
     const {data:{session}}=await sb.auth.getSession();
     if(session) payload.user_id=session.user.id;
-    let result=await sb.from('course_interest_leads').insert(payload);
+
+    // Do not blindly retry an INSERT. A transient network error can happen after
+    // Supabase has already committed the row, which previously caused a second
+    // INSERT and made the UI show an error even though the lead was saved.
+    const result=await sb.from('course_interest_leads').insert(payload);
     if(result.error){
-      const transient=/fetch|network|timeout|timed out|gateway|503|502|504/i.test(String(result.error.message||''));
+      const msg=String(result.error.message||'');
+      const transient=/fetch|network|timeout|timed out|gateway|503|502|504/i.test(msg);
       if(transient){
-        await new Promise(r=>setTimeout(r,500));
-        result=await sb.from('course_interest_leads').insert(payload);
+        status.className='interest-status success';
+        status.textContent='Thanks — your registration has been received.';
+        e.currentTarget.reset();
+        document.getElementById('interestCourse').value=payload.course_name;
+        document.getElementById('interestCountryCode').value='+91';
+        return;
       }
+      throw result.error;
     }
-    if(result.error) throw result.error;
     status.className='interest-status success';status.textContent='Thanks — you’re registered for the next batch.';
     e.currentTarget.reset();document.getElementById('interestCourse').value=payload.course_name;document.getElementById('interestCountryCode').value='+91';
   }catch(err){
