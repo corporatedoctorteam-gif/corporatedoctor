@@ -116,42 +116,64 @@ document.getElementById('interestClose')?.addEventListener('click',closeCourseIn
   }
 });document.getElementById('courseInterestForm')?.addEventListener('submit',async e=>{
   e.preventDefault();
-  const status=document.getElementById('interestStatus'),btn=e.currentTarget.querySelector('button[type=submit]'),old=btn.textContent;
-  const cc=document.getElementById('interestCountryCode').value;
-  const digits=document.getElementById('interestPhone').value.replace(/\D/g,'');
-  const valid=cc==='+91'?/^[6-9]\d{9}$/.test(digits):/^\d{7,15}$/.test(digits);
-  const payload={course_name:document.getElementById('interestCourse').value,full_name:document.getElementById('interestName').value.trim(),phone:cc+digits,email:document.getElementById('interestEmail').value.trim()||null};
-  if(!payload.full_name||!valid){status.className='interest-status error';status.textContent='Please enter your full name and a valid mobile number.';return}
-  btn.disabled=true;btn.textContent='Registering…';status.className='interest-status';status.textContent='';
-  try{
-    const {data:{session}}=await sb.auth.getSession();
-    if(session) payload.user_id=session.user.id;
+  const btn=e.currentTarget.querySelector('button[type="submit"]');
+  const status=document.getElementById('interestStatus');
+  const old=btn.textContent;
 
-    // Do not blindly retry an INSERT. A transient network error can happen after
-    // Supabase has already committed the row, which previously caused a second
-    // INSERT and made the UI show an error even though the lead was saved.
-    const result=await sb.from('course_interest_leads').insert(payload);
-    if(result.error){
-      const msg=String(result.error.message||'');
-      const transient=/fetch|network|timeout|timed out|gateway|503|502|504/i.test(msg);
-      if(transient){
-        status.className='interest-status success';
-        status.textContent='Thanks — your registration has been received.';
-        e.currentTarget.reset();
-        document.getElementById('interestCourse').value=payload.course_name;
-        document.getElementById('interestCountryCode').value='+91';
-        return;
-      }
-      throw result.error;
+  const countryCode=document.getElementById('interestCountryCode').value;
+  const phoneDigits=document.getElementById('interestPhone').value.replace(/\D/g,'');
+  const fullName=document.getElementById('interestName').value.trim();
+  const email=document.getElementById('interestEmail').value.trim().toLowerCase();
+  const courseName=document.getElementById('interestCourse').value;
+
+  const valid=countryCode==='+91'
+    ? /^[6-9]\d{9}$/.test(phoneDigits)
+    : /^\d{7,15}$/.test(phoneDigits);
+
+  if(!fullName||!valid){
+    status.className='interest-status error';
+    status.textContent='Please enter your full name and a valid mobile number.';
+    return;
+  }
+
+  const normalizedPhone=countryCode+phoneDigits;
+  btn.disabled=true;
+  btn.textContent='Registering…';
+  status.className='interest-status';
+  status.textContent='';
+
+  try{
+    /*
+      Use a SECURITY DEFINER Supabase RPC for this lead write.
+      This avoids the previous browser INSERT/response race where the row
+      was committed but the client still received an error and showed failure.
+    */
+    const {data,error}=await sb.rpc('submit_course_interest',{
+      p_course_name:courseName,
+      p_full_name:fullName,
+      p_phone:normalizedPhone,
+      p_email:email||null
+    });
+
+    if(error) throw error;
+    if(data !== true){
+      throw new Error('The database did not confirm the registration.');
     }
-    status.className='interest-status success';status.textContent='Thanks — you’re registered for the next batch.';
-    e.currentTarget.reset();document.getElementById('interestCourse').value=payload.course_name;document.getElementById('interestCountryCode').value='+91';
+
+    status.className='interest-status success';
+    status.textContent='Thanks — you’re registered for the next batch.';
+    e.currentTarget.reset();
+    document.getElementById('interestCourse').value=courseName;
+    document.getElementById('interestCountryCode').value='+91';
   }catch(err){
-    console.error('[Course Interest]',err);
+    console.error('[Course Interest RPC]',err);
     status.className='interest-status error';
     status.textContent='We couldn’t save your registration. Please try again in a moment.';
-  }finally{btn.disabled=false;btn.textContent=old}
-});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('courseInterestOverlay')?.classList.contains('open'))closeCourseInterest()});
+  }finally{
+    btn.disabled=false;
+    btn.textContent=old;
+  }
+});;document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('courseInterestOverlay')?.classList.contains('open'))closeCourseInterest()});
 
 load();
 
