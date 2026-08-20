@@ -116,7 +116,8 @@ document.getElementById('interestClose')?.addEventListener('click',closeCourseIn
   }
 });document.getElementById('courseInterestForm')?.addEventListener('submit',async e=>{
   e.preventDefault();
-  const btn=e.currentTarget.querySelector('button[type="submit"]');
+  const form=e.currentTarget;
+  const btn=form.querySelector('button[type="submit"]');
   const status=document.getElementById('interestStatus');
   const old=btn.textContent;
 
@@ -164,7 +165,7 @@ document.getElementById('interestClose')?.addEventListener('click',closeCourseIn
     // `data === true` check.
     status.className='interest-status success';
     status.textContent='Thanks — you’re registered for the next batch.';
-    e.currentTarget.reset();
+    form.reset();
     document.getElementById('interestCourse').value=courseName;
     document.getElementById('interestCountryCode').value='+91';
   }catch(err){
