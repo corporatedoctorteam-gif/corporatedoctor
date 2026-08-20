@@ -40,7 +40,7 @@ function course(j){for(const k in GRAPHY_COURSES)if(norm(j.category).includes(k)
 function skillList(j){for(const k in skills)if(norm(j.category).includes(k))return skills[k];return['Healthcare Knowledge','Communication','Documentation','Research Skills','Digital Literacy','Role-specific fundamentals']}
 function structured(j){const x={'@context':'https://schema.org','@type':'JobPosting','title':j.title,'description':j.description||('Non-clinical healthcare opportunity: '+j.title),'datePosted':j.posted||undefined,'hiringOrganization':{'@type':'Organization','name':j.company||'Employer'},'url':location.href,'employmentType':j.type||'FULL_TIME'};if(j.location)x.jobLocation={'@type':'Place','address':{'@type':'PostalAddress','addressLocality':j.location,'addressCountry':'IN'}};return x}
 function error(msg){document.getElementById('app').innerHTML='<div class="wrap notfound"><h1>We couldn’t find that vacancy.</h1><p>'+esc(msg)+'</p><a class="btn primary" style="display:inline-flex;margin-top:18px" href="/jobs.html">Browse vacancies →</a></div>'}
-async function load(){if(!id){error('This vacancy link is incomplete.');return}const {data:j,error:e}=await sb.from('vacancies').select('*, categories(name)').eq('id',id).maybeSingle();if(e||!j){error('This vacancy is no longer available.');return}const job={id:j.id,title:j.title,company:j.company,location:j.location,category:j.categories?.name||'General',type:j.employment_type,link:j.application_link,posted:j.posted_date,description:j.description||'',salary:j.salary_range||j.salary||j.ctc||j.compensation||'',experience:j.experience_required||j.experience||j.years_experience||'',eligibility:j.eligibility||j.qualification||j.qualifications||'',workMode:j.work_mode||j.work_type||j.mode||'',verified:!!j.is_verified};render(job)}
+async function load(){if(!id){error('This vacancy link is incomplete.');return}const {data:j,error:e}=await sb.from('vacancies').select('*, categories(name)').eq('id',id).maybeSingle();if(e||!j){error('This vacancy is no longer available.');return}const job={id:j.id,title:j.title,company:j.company,location:j.location,category:j.categories?.name||'General',type:j.employment_type,link:j.application_link||j.application_url||j.apply_url||j.apply_link||j.external_url||j.source_url||'',posted:j.posted_date,description:j.description||'',salary:j.salary_range||j.salary||j.ctc||j.compensation||'',experience:j.experience_required||j.experience||j.years_experience||'',eligibility:j.eligibility||j.qualification||j.qualifications||'',workMode:j.work_mode||j.work_type||j.mode||'',verified:!!j.is_verified};render(job)}
 function degreeList(j){
   const text = norm(j.eligibility);
   const found = [];
@@ -90,17 +90,53 @@ function render(j){
 
 async function handleJobApply(event){
   event.preventDefault();
-  const link=event.currentTarget?.dataset?.applyLink||'#';
-  try{
-    const {data:{session}}=await sb.auth.getSession();
-    if(session){
-      try{gtag('event','job_apply',{job_id:String(id)})}catch(e){}
-      window.open(link,'_blank','noopener');
+
+  const anchor = event.currentTarget;
+  const rawLink = anchor?.dataset?.applyLink || '';
+  let link = rawLink.trim();
+
+  // Decode HTML-escaped ampersands that may have been introduced while
+  // placing the application URL in a data attribute.
+  link = link.replace(/&amp;/g, '&');
+
+  const currentUrl = new URL(window.location.href);
+  let applicationUrl = null;
+  try {
+    const candidate = new URL(link, window.location.href);
+    const sameJobPage = candidate.origin === currentUrl.origin &&
+      candidate.pathname === currentUrl.pathname &&
+      candidate.search === currentUrl.search;
+    if (/^https?:$/.test(candidate.protocol) && !sameJobPage) {
+      applicationUrl = candidate.href;
+    }
+  } catch (e) {}
+
+  if (!applicationUrl) {
+    alert('The employer application link is currently unavailable for this vacancy. Please try again later.');
+    return;
+  }
+
+  try {
+    const {data:{session}} = await sb.auth.getSession();
+
+    // Already authenticated: go directly to the employer application page.
+    if (session) {
+      try { gtag('event','job_apply',{job_id:String(id)}); } catch(e) {}
+      window.location.assign(applicationUrl);
       return;
     }
-  }catch(e){}
-  // Pass the actual employer application URL so a successful login immediately continues to the application.
-  window.location.href='/?login=1&return_to='+encodeURIComponent(link);
+  } catch (e) {
+    console.error('[Apply] Session check failed:', e);
+  }
+
+  // Not authenticated: send the user to the existing Corporate Doctor
+  // authentication flow and preserve the exact employer URL for return.
+  try {
+    sessionStorage.setItem('cd_pending_application_url', applicationUrl);
+    sessionStorage.setItem('cd_pending_application_job_id', String(id));
+  } catch(e) {}
+
+  window.location.assign('/?login=1&return_to=' + encodeURIComponent(applicationUrl));
 }
 
 async function openCourseInterest(courseName){const o=document.getElementById('courseInterestOverlay');document.getElementById('interestCourse').value=courseName;document.getElementById('interestCourseLabel').textContent='Register to the next batch for the '+courseName+'.';document.getElementById('interestStatus').textContent='';o.classList.add('open');o.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';try{const {data:{session}}=await sb.auth.getSession();if(session){document.getElementById('interestName').value=session.user.user_metadata?.full_name||'';document.getElementById('interestEmail').value=session.user.email||'';const stored=session.user.user_metadata?.phone||localStorage.getItem('cd_profile_phone')||'';const m=String(stored).match(/^(\+\d+)(\d{7,15})$/);if(m){const opt=[...document.getElementById('interestCountryCode').options].find(x=>x.value===m[1]);if(opt){document.getElementById('interestCountryCode').value=m[1];document.getElementById('interestPhone').value=m[2]}}else document.getElementById('interestPhone').value=stored.replace(/\D/g,'');}}catch(e){}setTimeout(()=>document.getElementById('interestName').focus(),40)}
