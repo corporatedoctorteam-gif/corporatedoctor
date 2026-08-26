@@ -14,6 +14,9 @@
 <link rel="shortcut icon" href="/corporate-doctor-favicon.png">
 <link rel="apple-touch-icon" sizes="512x512" href="/corporate-doctor-favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style id="interview-confidence-job-trust">.job-guarantee{margin-top:18px;padding:18px;border:1px solid #E4EAF0;border-radius:18px;background:linear-gradient(135deg,#F7FAFF,#fff)}.job-guarantee .kicker{font-size:10px;font-weight:800;letter-spacing:.12em;color:var(--coral);text-transform:uppercase}.job-guarantee h3{font:700 21px/1.15 Fraunces,Georgia,serif;color:var(--navy);margin:7px 0}.job-guarantee p{font-size:12px;line-height:1.6;color:#66778A;margin:0}.job-guarantee strong{color:var(--navy)}.job-guarantee .mini-note{font-size:10px;color:#8B98A6;margin-top:9px}
+</style>
 <style id="job-seo-course-upgrades">.site-tagline{font-family:Fraunces,Georgia,serif;font-style:italic;font-weight:700;color:var(--navy);font-size:16px;margin-top:10px}.main h2{color:var(--coral)!important}.notfound p{max-width:620px;margin:10px auto;color:#66778A;line-height:1.7}</style>
 </head><body>
 <header><div class="wrap nav"><a href="/" class="brand"><img src="assets/corporate-doctor-logo.png" alt="Corporate Doctor"></a><a class="back" href="/jobs.html">← All vacancies</a></div></header><div class="site-tagline wrap">One Degree, Infinite Possibilities</div>
@@ -81,118 +84,75 @@ function render(j){
     '<div class="section"><h2>Skills that matter</h2><div class="skills">'+ss.map(x=>'<span class="skill">'+esc(x)+'</span>').join('')+'</div></div>'+ 
     '<div class="section"><h2>Who this role may suit</h2>'+degreeMarkup+'</div>'+ 
     '<a class="home-return" href="/">← Return to Corporate Doctor home</a>'+ 
-    '</div><aside class="snapshot"><h3>Role snapshot</h3>'+(j.salary?'<div class="salary">'+esc(j.salary)+'</div>':'')+ '<div class="stat"><small>Career</small><strong>'+esc(j.category)+'</strong></div><div class="stat"><small>Location</small><strong>'+esc(j.location||'Not specified')+'</strong></div><div class="stat"><small>Work mode</small><strong>'+esc(j.workMode||'Not specified')+'</strong></div><div class="stat"><small>Experience</small><strong>'+esc(j.experience||'Not specified')+'</strong></div><div class="stat"><small>Employment</small><strong>'+esc(j.type||'Full-time')+'</strong></div><div class="actions"><button class="btn primary apply-now-btn" type="button" data-apply-link="'+esc(j.link||'#')+'">Apply Now →</button><a class="btn secondary" href="'+(courseActive?esc(courseUrl):'#')+'" target="_blank" rel="noopener noreferrer" data-interest-course="'+esc(courseName)+'" >Learn the skills required for this role →</a></div>'+ 
+    '</div><aside class="snapshot"><h3>Role snapshot</h3>'+(j.salary?'<div class="salary">'+esc(j.salary)+'</div>':'')+ '<div class="stat"><small>Career</small><strong>'+esc(j.category)+'</strong></div><div class="stat"><small>Location</small><strong>'+esc(j.location||'Not specified')+'</strong></div><div class="stat"><small>Work mode</small><strong>'+esc(j.workMode||'Not specified')+'</strong></div><div class="stat"><small>Experience</small><strong>'+esc(j.experience||'Not specified')+'</strong></div><div class="stat"><small>Employment</small><strong>'+esc(j.type||'Full-time')+'</strong></div><div class="actions"><a class="btn primary" href="#" data-apply-link="'+esc(j.link||'#')+'" onclick="handleJobApply(event)">Apply Now →</a><a class="btn secondary" href="'+(courseActive?esc(courseUrl):'#')+'" target="_blank" rel="noopener noreferrer" data-interest-course="'+esc(courseName)+'" >Learn the skills required for this role →</a></div>'+ 
     (c?'<div class="learn"><div class="kicker">'+(courseActive?'BECOME JOB-READY':'NEXT BATCH')+'</div><h3>'+esc(courseName)+'</h3><p>'+(courseActive?'Built for this career area, with practical preparation aligned to the skills shown above and the kinds of roles in the Corporate Doctor job feed.':'Register to the next batch for this Job Ready System.')+'</p>'+(courseActive?'<a href="'+esc(courseUrl)+'" target="_blank" rel="noopener noreferrer">Explore program →</a>':'<button class="learn-interest" type="button" data-interest-course="'+esc(courseName)+'">Register to the next batch →</button>')+'</div>':'')+
-    '<p class="fine">Corporate Doctor curates opportunities for relevance. Hiring decisions remain with the employer.</p></aside></section>';
+    '<div class="job-guarantee"><div class="kicker">OUR APPROACH</div><h3>We don’t promise you a job. We promise to prepare you for the opportunity.</h3><p><strong>Because jobs aren’t sold. They’re earned.</strong> Corporate Doctor focuses on the skills, resume, applications and interview readiness you can actually control.</p><p class="mini-note">Eligible learners may also qualify for our 90-Day Interview Confidence Guarantee.*</p></div><p class="fine">*Eligibility criteria and guarantee terms apply. Corporate Doctor curates opportunities for relevance. Hiring decisions remain with the employer.</p></aside></section>';
   document.getElementById('jobPostingSchema').textContent=JSON.stringify(structured(j));
   try{gtag('event','job_view',{job_id:String(j.id),job_title:j.title,career:j.category});fbq('track','ViewContent',{content_name:j.title,content_category:j.category})}catch(e){}
 }
 
 async function handleJobApply(event){
-  if (event) {
-    event.preventDefault();
-    event.stopPropagation();
+  event.preventDefault();
+  event.stopPropagation();
+
+  const anchor = event.currentTarget;
+  const currentUrl = new URL(window.location.href);
+  const rawCandidates = [
+    anchor?.dataset?.applyLink || '',
+    window.__currentJob?.application_link || '',
+    window.__currentJob?.application_url || '',
+    window.__currentJob?.apply_url || '',
+    window.__currentJob?.apply_link || '',
+    window.__currentJob?.external_url || '',
+    window.__currentJob?.source_url || ''
+  ];
+
+  function normalizeCandidate(raw){
+    let link = String(raw || '').trim().replace(/&amp;/g, '&');
+    if (!link || link === '#') return null;
+    if (/^(www\.)/i.test(link)) link = 'https://' + link;
+    if (!/^https?:\/\//i.test(link)) return null;
+    try {
+      const candidate = new URL(link);
+      const sameSite = candidate.origin === currentUrl.origin;
+      const isCurrentJobPage = sameSite && candidate.pathname === currentUrl.pathname && candidate.search === currentUrl.search;
+      const isCorporateJobPage = sameSite && /\/(job|jobs)\.html$/i.test(candidate.pathname);
+      if (!/^https?:$/.test(candidate.protocol)) return null;
+      if (isCurrentJobPage || isCorporateJobPage) return null;
+      return candidate.href;
+    } catch(e){ return null; }
   }
 
-  const button = event?.currentTarget || document.querySelector('.apply-now-btn');
-  button?.setAttribute('aria-busy','true');
-  if (button) button.disabled = true;
+  const applicationUrl = rawCandidates.map(normalizeCandidate).find(Boolean);
+  if (!applicationUrl){
+    alert('The employer application link is currently unavailable for this vacancy. Please try again later.');
+    return;
+  }
+
+  let session = null;
+  try {
+    const result = await sb.auth.getSession();
+    session = result?.data?.session || null;
+  } catch(e){
+    console.error('[Apply] Session check failed:', e);
+  }
+
+  if (session){
+    try { gtag('event','job_apply',{job_id:String(id),authenticated:true}); } catch(e) {}
+    window.location.replace(applicationUrl);
+    return;
+  }
 
   try {
-    const currentUrl = new URL(window.location.href);
-    const job = window.__currentJob || {};
+    sessionStorage.setItem('cd_pending_application_url', applicationUrl);
+    sessionStorage.setItem('cd_pending_application_job_id', String(id));
+  } catch(e) {}
 
-    // Resolve the employer/application destination from the actual vacancy record.
-    const rawCandidates = [
-      button?.dataset?.applyLink || '',
-      job.application_link || '',
-      job.application_url || '',
-      job.apply_url || '',
-      job.apply_link || '',
-      job.external_url || '',
-      job.source_url || ''
-    ];
-
-    function resolveApplicationUrl(raw){
-      let link = String(raw || '').trim().replace(/&amp;/g, '&');
-      if (!link || link === '#') return null;
-      if (/^(www\.)/i.test(link)) link = 'https://' + link;
-      // Also support database values that contain a relative URL.
-      if (link.startsWith('/')) link = new URL(link, currentUrl.origin).href;
-      if (!/^https?:\/\//i.test(link)) return null;
-
-      try {
-        const u = new URL(link);
-
-        // Never allow Apply to navigate back into Corporate Doctor's own
-        // vacancy pages. Such a value is not an employer application URL.
-        if (u.origin === currentUrl.origin &&
-            (/\/job\.html$/i.test(u.pathname) ||
-             /\/jobs\.html$/i.test(u.pathname) ||
-             u.pathname === '/' || u.pathname === '')) {
-          return null;
-        }
-
-        if (!['http:', 'https:'].includes(u.protocol)) return null;
-        return u.href;
-      } catch (_) {
-        return null;
-      }
-    }
-
-    const applicationUrl = rawCandidates.map(resolveApplicationUrl).find(Boolean);
-
-    if (!applicationUrl) {
-      alert('The employer application link is currently unavailable for this vacancy. Please contact us if you need help applying.');
-      return;
-    }
-
-    // Use getUser rather than relying only on a cached session object.
-    // This gives the Apply action an authoritative answer about whether
-    // the current browser is authenticated.
-    let user = null;
-    try {
-      const { data, error } = await sb.auth.getUser();
-      if (!error) user = data?.user || null;
-    } catch (err) {
-      console.warn('[Apply] Could not verify current user:', err);
-    }
-
-    if (user) {
-      try {
-        gtag('event','job_apply',{job_id:String(id),authenticated:true});
-      } catch (_) {}
-
-      // Direct employer routing for authenticated users.
-      window.location.assign(applicationUrl);
-      return;
-    }
-
-    // Not authenticated: preserve the exact employer URL and let the
-    // homepage open its existing OTP login modal.
-    try {
-      sessionStorage.setItem('cd_pending_application_url', applicationUrl);
-      sessionStorage.setItem('cd_pending_application_job_id', String(id || ''));
-    } catch (_) {}
-
-    const loginUrl = new URL('/', window.location.origin);
-    loginUrl.searchParams.set('login', '1');
-    loginUrl.searchParams.set('return_to', applicationUrl);
-    window.location.assign(loginUrl.href);
-
-  } finally {
-    if (button) {
-      button.disabled = false;
-      button.removeAttribute('aria-busy');
-    }
-  }
+  const loginUrl = new URL('/', window.location.origin);
+  loginUrl.searchParams.set('login', '1');
+  loginUrl.searchParams.set('return_to', applicationUrl);
+  window.location.assign(loginUrl.href);
 }
-
-document.addEventListener('click', function(e){
-  const applyButton = e.target.closest && e.target.closest('.apply-now-btn');
-  if (!applyButton) return;
-  handleJobApply({ currentTarget: applyButton, preventDefault(){}, stopPropagation(){} });
-});
 
 async function openCourseInterest(courseName){const o=document.getElementById('courseInterestOverlay');document.getElementById('interestCourse').value=courseName;document.getElementById('interestCourseLabel').textContent='Register to the next batch for the '+courseName+'.';document.getElementById('interestStatus').textContent='';o.classList.add('open');o.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';try{const {data:{session}}=await sb.auth.getSession();if(session){document.getElementById('interestName').value=session.user.user_metadata?.full_name||'';document.getElementById('interestEmail').value=session.user.email||'';const stored=session.user.user_metadata?.phone||localStorage.getItem('cd_profile_phone')||'';const m=String(stored).match(/^(\+\d+)(\d{7,15})$/);if(m){const opt=[...document.getElementById('interestCountryCode').options].find(x=>x.value===m[1]);if(opt){document.getElementById('interestCountryCode').value=m[1];document.getElementById('interestPhone').value=m[2]}}else document.getElementById('interestPhone').value=stored.replace(/\D/g,'');}}catch(e){}setTimeout(()=>document.getElementById('interestName').focus(),40)}
 function handleCourseAction(event,el){if(!el.getAttribute('href')||el.getAttribute('href')==='#'){event.preventDefault();openCourseInterest(el.dataset.interestCourse||'Upcoming Job Ready System');return false}try{gtag('event','course_click',{source:'job_detail',job_id:String(id),career:el.dataset.interestCourse||''})}catch(e){}return true}
